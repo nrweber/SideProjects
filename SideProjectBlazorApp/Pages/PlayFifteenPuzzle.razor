@@ -1,0 +1,51 @@
+@page "/PlayFifteenPuzzle"
+
+@using FifteenPuzzleGame
+
+<table>
+@for(var i = 0; i < Puzzle.CurrentBoard.Length; i++)
+{
+    var selectionIndex = i;
+    if(i % 4 == 0)
+    {
+        @:<tr>
+    }
+
+    <td>
+        <div class="card numberCard @((IsRed(Puzzle.CurrentBoard[i])) ? "numberRedCard" :"") @((Puzzle.CurrentBoard[i] == 0) ? "numberZero" : "")" @onclick="@(() => DoMove(selectionIndex))">
+            <div class="number">@Puzzle.CurrentBoard[i]</div>
+        </div>
+    </td>
+
+    @if(i % 4 == 3)
+    {
+        @:</tr>
+    }
+
+}
+
+</table>
+
+<button @onclick="NewPuzzle">NewPuzzle</button>
+
+
+@code
+{
+    FifteenPuzzle Puzzle = new FifteenPuzzle();
+
+    void NewPuzzle()
+    {
+        Puzzle = new FifteenPuzzle();
+    }
+
+    bool IsRed(int number)
+    {
+        return (number == 2 || number == 4 || number == 5 || number == 7 || number == 10 || number == 12 || number == 13 || number == 15);
+    }
+
+    void DoMove(int movLoc)
+    {
+        Puzzle.Move(movLoc);
+        InvokeAsync(() => StateHasChanged());
+    }
+}
