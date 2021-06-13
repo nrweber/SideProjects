@@ -1,0 +1,20 @@
+.numberCard
+{
+    width: 80px;
+    height: 80px;
+}
+.number
+{
+    margin: auto;
+}
+
+.numberRedCard
+{
+    background-color: red;
+}
+
+.numberZero
+{
+    background-color: black;
+}
+
