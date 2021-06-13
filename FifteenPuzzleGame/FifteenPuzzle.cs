@@ -6,9 +6,9 @@ namespace FifteenPuzzleGame
     public class FifteenPuzzle
     {
         private int[] _solution = new int[16] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
-        private int[] _currentBoard = new int[16];
+        private int[] _currentBoard = new int[16]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
 
-        private int _zeroPosition = 16;
+        private int _zeroPosition = 15;
 
         public int[] CurrentBoard { get { return _currentBoard.ToArray(); } }
 
@@ -33,18 +33,22 @@ namespace FifteenPuzzleGame
         {
             Random rnd =new Random();
 
-            _currentBoard = _solution.OrderBy(x => rnd.Next()).ToArray();
-
-            //Move 0 to the end
-            for(int i = 0; i < _currentBoard.Length; i++)
+            //You cannot just shuffle the array. If you do the puzzle may
+            // not be solvable. So, this loop just make a bunch of random moves
+            // to shuffle up the board.
+            for(int i = 0; i < 10000; i++)
             {
-                if(_currentBoard[i] == 0)
-                {
-                    _currentBoard[i] = _currentBoard[15];
-                    _currentBoard[15] = 0;
-                    break;
-                }
+                int loc = rnd.Next(0, 16);
+                Move(loc);
             }
+
+            //Move the zero to the bottom right corner
+            while(_zeroPosition %4 != 3)
+                Move(_zeroPosition+1);
+
+            while(_zeroPosition != 15)
+                Move(_zeroPosition+4);
+
         }
 
         public void Move(int position)
