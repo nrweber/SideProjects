@@ -56,12 +56,12 @@ namespace TicTacToeGame.Test
             for(int i = 0; i < locations.Length-1; i++)
             {
                 g.Place(locations[i]);
-                Assert.Equal(0, g.Winner());
+                Assert.Equal(0, g.Winner);
             }
 
             var winningMove = locations[locations.Length-1];
             g.Place(winningMove);
-            Assert.Equal(1, g.Winner());
+            Assert.Equal(1, g.Winner);
         }
 
         [Theory]
@@ -79,12 +79,12 @@ namespace TicTacToeGame.Test
             for(int i = 0; i < locations.Length-1; i++)
             {
                 g.Place(locations[i]);
-                Assert.Equal(0, g.Winner());
+                Assert.Equal(0, g.Winner);
             }
 
             var winningMove = locations[locations.Length-1];
             g.Place(winningMove);
-            Assert.Equal(2, g.Winner());
+            Assert.Equal(2, g.Winner);
         }
 
         [Theory]
@@ -97,12 +97,12 @@ namespace TicTacToeGame.Test
             for(int i = 0; i < locations.Length-1; i++)
             {
                 g.Place(locations[i]);
-                Assert.Equal(0, g.Winner());
+                Assert.Equal(0, g.Winner);
             }
 
             var lastMove = locations[locations.Length-1];
             g.Place(lastMove);
-            Assert.Equal(3, g.Winner());
+            Assert.Equal(3, g.Winner);
         }
 
         [Theory]
@@ -118,12 +118,12 @@ namespace TicTacToeGame.Test
             for(int i = 0; i < locations.Length-2; i++)
             {
                 g.Place(locations[i]);
-                Assert.Equal(0, g.Winner());
+                Assert.Equal(0, g.Winner);
             }
 
             var winningMove = locations[locations.Length-2];
             g.Place(winningMove);
-            Assert.NotEqual(0, g.Winner());
+            Assert.NotEqual(0, g.Winner);
 
             var extraMove = locations[locations.Length-1];
             var boardBefore = g.Board;

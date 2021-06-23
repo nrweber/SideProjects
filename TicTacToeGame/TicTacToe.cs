@@ -7,13 +7,16 @@ namespace TicTacToeGame
     public class TicTacToe
     {
         private int moveNumber = 0;
-        public int ToMove 
+        public int ToMove
         {
             get
             {
                 return (moveNumber%2)+1;
             }
         }
+
+        private int _winner = 0;
+        public int Winner { get { return _winner; } }
 
         private List<int[]> winningPaths = new List<int[]>{
             new int[] {0,1,2},
@@ -41,23 +44,34 @@ namespace TicTacToeGame
 
         public void Place(int location)
         {
-            if(Winner() == 0 && location >= 0 && location <= 8 && _board[location] == 0)
+            if(Winner == 0 && location >= 0 && location <= 8 && _board[location] == 0)
             {
                 _board[location] = (moveNumber%2)+1;
                 moveNumber += 1;
+
+                CheckWinner();
             }
         }
 
-        public int Winner()
+        public void CheckWinner()
         {
             foreach(var path in winningPaths)
             {
                 if(_board[path[0]] != 0 && _board[path[0]] == _board[path[1]] && _board[path[0]] == _board[path[2]])
-                    return _board[path[0]];
+                {
+                    _winner = _board[path[0]];
+                    return;
+                }
             }
+
             if(moveNumber == 9)
-                return 3;
-            return 0;
+            {
+                _winner = 3;
+                return;
+            }
+
+            //Game is still going
+            _winner = 0;
         }
 
     }
