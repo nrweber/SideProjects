@@ -18,6 +18,18 @@ namespace TicTacToeGame
         private int _winner = 0;
         public int Winner { get { return _winner; } }
 
+        private int[] _winningPath = new int[0];
+        public int[] WinningPath
+        {
+            get
+            {
+                var toReturn = new int[_winningPath.Length];
+                for(int i = 0; i < toReturn.Length; i++)
+                    toReturn[i] = _winningPath[i];
+                return toReturn;
+            }
+        }
+
         private List<int[]> winningPaths = new List<int[]>{
             new int[] {0,1,2},
             new int[] {3,4,5},
@@ -60,6 +72,7 @@ namespace TicTacToeGame
                 if(_board[path[0]] != 0 && _board[path[0]] == _board[path[1]] && _board[path[0]] == _board[path[2]])
                 {
                     _winner = _board[path[0]];
+                    _winningPath = path;
                     return;
                 }
             }

@@ -189,5 +189,31 @@ namespace TicTacToeGame.Test
             Assert.Equal(2, g.ToMove);
             g.Place(4);
         }
+
+        [Theory]
+        [InlineData(new int[] { 0, 3, 1, 4, 2}, new int[] {0, 1, 2})]
+        [InlineData(new int[] { 5, 1, 4, 8, 3}, new int[] {3, 4, 5})]
+        [InlineData(new int[] { 8, 1, 6, 0, 7}, new int[] {6, 7, 8})]
+        [InlineData(new int[] {0, 1, 3, 7, 6}, new int[] {0, 3, 6})]
+        [InlineData(new int[] {1, 3, 7, 5, 4}, new int[] {1, 4, 7})]
+        [InlineData(new int[] {8, 4, 5, 0, 2}, new int[] {2, 5, 8})]
+        [InlineData(new int[] {8, 2, 0, 3, 4}, new int[] {0, 4, 8})]
+        [InlineData(new int[] {2, 1, 6, 5, 4}, new int[] {2, 4, 6})]
+        [InlineData(new int[] {8, 0, 3, 1, 4, 2}, new int[] {0, 1, 2})]
+        [InlineData(new int[] {0, 5, 1, 4, 8, 3}, new int[] {3, 4, 5})]
+        [InlineData(new int[] {3, 8, 1, 6, 0, 7}, new int[] {6, 7, 8})]
+        [InlineData(new int[] {2, 0, 1, 3, 7, 6}, new int[] {0, 3, 6})]
+        [InlineData(new int[] {8, 1, 3, 7, 5, 4}, new int[] {1, 4, 7})]
+        [InlineData(new int[] {1, 8, 4, 5, 0, 2}, new int[] {2, 5, 8})]
+        [InlineData(new int[] {7, 8, 2, 0, 3, 4}, new int[] {0, 4, 8})]
+        [InlineData(new int[] {0, 2, 1, 6, 5, 4}, new int[] {2, 4, 6})]
+        public void WinningPathGivesTheLocationsOfTheWinningPlays(int[] locations, int[] winningPath)
+        {
+            var g = new TicTacToe();
+            for(int i = 0; i < locations.Length; i++)
+                g.Place(locations[i]);
+
+            Assert.Equal(winningPath, g.WinningPath);
+        }
     }
 }
