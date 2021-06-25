@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FifteenPuzzleGame\FifteenPuzzleGame.csproj" />
+    <ProjectReference Include="..\TicTacToeGame\TicTacToeGame.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

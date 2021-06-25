@@ -1,0 +1,25 @@
+.numberCard
+{
+    width: 80px;
+    height: 80px;
+}
+.number
+{
+    margin: auto;
+    font-size: x-large;
+}
+
+.numberZero
+{
+    background-color: black;
+}
+
+.winningCard
+{
+    background-color: red;
+}
+
+.catGameCard
+{
+    background-color: LightSkyblue;
+}
