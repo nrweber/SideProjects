@@ -3,6 +3,9 @@
   <ItemGroup>
     <ProjectReference Include="..\FifteenPuzzleGame\FifteenPuzzleGame.csproj" />
     <ProjectReference Include="..\TicTacToeGame\TicTacToeGame.csproj" />
+    <ProjectReference Include="..\NOAAWeatherLibrary\NOAAWeatherLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 
   <PropertyGroup>
