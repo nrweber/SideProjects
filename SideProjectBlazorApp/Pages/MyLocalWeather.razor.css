@@ -1,0 +1,30 @@
+.WeatherData {
+    display: flex;
+}
+
+.Conditions {
+    text-align: center;
+}
+
+.Temperature {
+    text-align: right;
+    margin-left: 2em;
+}
+
+.TempF {
+    font-size: 5rem;
+    margin: 0;
+    line-height: 1.15;
+}
+
+.TempC {
+    margin: 0;
+}
+
+.Time {
+    font-size: 0.65rem;
+}
+
+.Source {
+    font-size: 0.65rem;
+}

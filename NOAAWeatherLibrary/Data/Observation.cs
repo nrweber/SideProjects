@@ -5,6 +5,18 @@ using System.Text.Json.Serialization;
 
 namespace NOAAWeather
 {
+    public class AllObservations
+    {
+        [JsonPropertyName("@context")]
+        public List<object> Context { get; set; }
+
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        [JsonPropertyName("features")]
+        public List<Observation> Feature { get; set; }
+    }
+
     public class Observation
     {
         [JsonPropertyName("@context")]

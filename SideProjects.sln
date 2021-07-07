@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeGame", "TicTacToeG
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicTacToeGame.Test", "TicTacToeGame.Test\TicTacToeGame.Test.csproj", "{0584FFBA-AD34-4E6B-831E-30B962700E9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NOAAWeatherLibrary", "NOAAWeatherLibrary\NOAAWeatherLibrary.csproj", "{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,5 +88,17 @@ Global
 		{0584FFBA-AD34-4E6B-831E-30B962700E9E}.Release|x64.Build.0 = Release|Any CPU
 		{0584FFBA-AD34-4E6B-831E-30B962700E9E}.Release|x86.ActiveCfg = Release|Any CPU
 		{0584FFBA-AD34-4E6B-831E-30B962700E9E}.Release|x86.Build.0 = Release|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Debug|x64.Build.0 = Debug|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Debug|x86.Build.0 = Debug|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Release|x64.ActiveCfg = Release|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Release|x64.Build.0 = Release|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4B0CEF9-F308-4662-B656-D60FC8D0BD06}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
