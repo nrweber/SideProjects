@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FifteenPuzzleGame
 {
-    public class FifteenPuzzle
+    public class FifteenPuzzleService
     {
         private int[] _solution = new int[16] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
         private int[] _currentBoard = new int[16]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
@@ -12,12 +12,12 @@ namespace FifteenPuzzleGame
 
         public int[] CurrentBoard { get { return _currentBoard.ToArray(); } }
 
-        public FifteenPuzzle()
+        public FifteenPuzzleService()
         {
             SetupRandomBoard();
         }
 
-        public FifteenPuzzle(int[] startingBoard)
+        public FifteenPuzzleService(int[] startingBoard)
         {
             for(int i = 0; i < _currentBoard.Length; i++)
             {

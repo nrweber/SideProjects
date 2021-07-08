@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\FifteenPuzzleGame\FifteenPuzzleGame.csproj" />
     <ProjectReference Include="..\TicTacToeGame\TicTacToeGame.csproj" />
     <ProjectReference Include="..\NOAAWeatherLibrary\NOAAWeatherLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\FifteenPuzzleGame.Blazor\FifteenPuzzleGame.Blazor.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
