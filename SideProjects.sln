@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NOAAWeatherLibrary", "NOAAW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FifteenPuzzleGame.Blazor", "FifteenPuzzleGame.Blazor\FifteenPuzzleGame.Blazor.csproj", "{B33DFF16-EF93-4B9A-A7A9-CFFA04A8B202}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SideProjectWASMApp", "SideProjectWASMApp\SideProjectWASMApp.csproj", "{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{B33DFF16-EF93-4B9A-A7A9-CFFA04A8B202}.Release|x64.Build.0 = Release|Any CPU
 		{B33DFF16-EF93-4B9A-A7A9-CFFA04A8B202}.Release|x86.ActiveCfg = Release|Any CPU
 		{B33DFF16-EF93-4B9A-A7A9-CFFA04A8B202}.Release|x86.Build.0 = Release|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Debug|x64.Build.0 = Debug|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Debug|x86.Build.0 = Debug|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Release|x64.ActiveCfg = Release|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Release|x64.Build.0 = Release|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Release|x86.ActiveCfg = Release|Any CPU
+		{8EA9D8F1-6CAD-425A-9DBD-7EDC5AADE216}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
