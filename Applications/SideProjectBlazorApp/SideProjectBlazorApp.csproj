@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Games\TicTacToe\TicTacToeGame\TicTacToeGame.csproj" />
+    <ProjectReference Include="..\..\Libraries\Weather\NOAAWeatherLibrary\NOAAWeatherLibrary.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Games\FifteenPuzzle\FifteenPuzzleGame.Blazor\FifteenPuzzleGame.Blazor.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
