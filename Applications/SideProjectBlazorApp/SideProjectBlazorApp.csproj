@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\Libraries\Games\FifteenPuzzle\FifteenPuzzleGame.Blazor\FifteenPuzzleGame.Blazor.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Weather\Weather.Blazor\Weather.Blazor.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,52 +1,11 @@
 ﻿@page "/MyLocalWeather"
 
-@inject NOAAWeatherService weather
+<div>
+    <div>Texas:</div>
+    <WeatherLocal />
+</div>
 
-<h3>My Local Weather</h3>
-
-@if (observation == null)
-{
-    <div>Loading....</div>
-}
-else
-{
-    <div>
-        <div class="WeatherData">
-            <div class="Conditions">
-                <img src="@observation.Properties.Icon" />
-                <div>@observation.Properties.TextDescription</div>
-            </div>
-            <div class="Temperature">
-                <div class="TempF">@(TempInF())&deg; </div>
-                <div class="TempC">@(observation.Properties.Temperature.Value)&deg; C</div>
-            </div>
-        </div>
-        <div class="Time">@observation.Properties.Timestamp</div>
-        <div class="Source">Source: NOAA</div>
-    </div>
-}
-
-
-
-@code {
-    Observation observation;
-
-    protected override async Task OnInitializedAsync()
-    {
-        observation = await weather.GetObservationForStationAsync("KFWS");
-    }
-
-
-    int TempInF()
-    {
-        if(observation.Properties.Temperature.Value == null)
-        {
-            return -500;
-        }
-
-
-        double temp = (double)observation.Properties.Temperature.Value;
-
-        return (int)((temp*1.8)+32);
-    }
-}
+<div style="padding-top: 25px">
+    <div>New York:</div>
+    <WeatherLocal Location="KNYC" />
+</div>
