@@ -9,6 +9,7 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Weather\Weather.Blazor\Weather.Blazor.csproj" />
+    <ProjectReference Include="..\..\Libraries\Games\TicTacToe\TicTacToeGame.Blazor\TicTacToeGame.Blazor.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

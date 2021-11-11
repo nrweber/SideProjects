@@ -12,6 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Games\FifteenPuzzle\FifteenPuzzleGame.Blazor\FifteenPuzzleGame.Blazor.csproj" />
+    <ProjectReference Include="..\..\Libraries\Weather\Weather.Blazor\Weather.Blazor.csproj" />
+    <ProjectReference Include="..\..\Libraries\Weather\NOAAWeatherLibrary\NOAAWeatherLibrary.csproj" />
+    <ProjectReference Include="..\..\Libraries\Games\TicTacToe\TicTacToeGame.Blazor\TicTacToeGame.Blazor.csproj" />
   </ItemGroup>
 
 </Project>
