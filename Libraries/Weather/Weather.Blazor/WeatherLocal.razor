@@ -32,7 +32,7 @@ else
     [Parameter]
     public string Location { get; set; } = "KFWS";
 
-    Observation observation;
+    Observation? observation = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,7 +42,7 @@ else
 
     int TempInF()
     {
-        if(observation.Properties.Temperature.Value == null)
+        if(observation?.Properties.Temperature.Value == null)
         {
             return -500;
         }
