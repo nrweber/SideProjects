@@ -1,9 +1,10 @@
 namespace ChessLibrary;
 
-public record struct Location
+public record struct Location(int Row, int Column)
 {
-    public int Row = 0;
-    public int Column = 0;
+    //public int Row = 0;
+    //public int Column = 0;
+    
 
 
     private static readonly char[] columns = new[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};

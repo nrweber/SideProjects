@@ -6,16 +6,46 @@ namespace ChessLibrary;
 public static class ChessHelper
 {
 
-    public static List<Move> PossibleMoves(BoardState state, Location loc)
+
+    public static List<Move> PossibleMovesForLocation(BoardState state, Location loc)
     {
         //Generate all possible moves by the normal rules of the pieces
         // Remove any that result in the current color being in check.
         // Mate and Still Mate will have 0 moves returned.
 
-        //Make sure you account for pawn promotion of pawns
+        //Make sure you account for promotion of pawns
+
+        List<Move> moves = new();
+
+        if(PIECE.WHITE_PAWN == state.Board[loc.Row, loc.Column])
+        {
+            //move foward 1
+            if(state.Board[loc.Row+1, loc.Column] == PIECE.NONE)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column)));
+            }
+
+            //move foward 2
+            if(loc.Row == 1 && state.Board[loc.Row+1, loc.Column] == PIECE.NONE && state.Board[loc.Row+2, loc.Column] == PIECE.NONE)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+2, loc.Column)));
+            }
+
+            //attack left
+            if(loc.Column != 0 && IsBlackPiece(state.Board[loc.Row+1, loc.Column-1]))
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
+            }
+
+            //attack right
+            if(loc.Column != 7 && IsBlackPiece(state.Board[loc.Row+1, loc.Column+1]))
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
+            }
+        }
 
 
-        return new List<Move>();
+        return moves;
     }
 
     public static bool MakeMove(BoardState state, Move newMove)
@@ -289,4 +319,19 @@ public static class ChessHelper
         return false;
     }
 
+    private static bool IsBlackPiece(PIECE p)
+    {
+        switch(p)
+        {
+            case PIECE.BLACK_PAWN:
+            case PIECE.BLACK_ROOK:
+            case PIECE.BLACK_KNIGHT:
+            case PIECE.BLACK_BISHOP:
+            case PIECE.BLACK_QUEEN:
+            case PIECE.BLACK_KING:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
