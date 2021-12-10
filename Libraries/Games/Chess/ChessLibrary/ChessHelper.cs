@@ -5,8 +5,6 @@ namespace ChessLibrary;
 
 public static class ChessHelper
 {
-
-
     public static List<Move> PossibleMovesForLocation(BoardState state, Location loc)
     {
         //Generate all possible moves by the normal rules of the pieces
@@ -17,33 +15,154 @@ public static class ChessHelper
 
         List<Move> moves = new();
 
-        if(PIECE.WHITE_PAWN == state.Board[loc.Row, loc.Column])
+        if(state.CurrentTurn == PLAYER.WHITE)
         {
-            //move foward 1
-            if(state.Board[loc.Row+1, loc.Column] == PIECE.NONE)
+            if(PIECE.WHITE_PAWN == state.Board[loc.Row, loc.Column])
             {
-                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column)));
-            }
+                if(state.Board[loc.Row+1, loc.Column] == PIECE.NONE)
+                {
+                    //move foward 1 for row 6 which would be a promotion
+                    if(loc.Row == 6)
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.QUEEN));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.BISHOP));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.KNIGHT));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.ROOK));
+                    }
+                    //move foward 1 for rows 1-5
+                    else
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column)));
+                    }
+                }
 
-            //move foward 2
-            if(loc.Row == 1 && state.Board[loc.Row+1, loc.Column] == PIECE.NONE && state.Board[loc.Row+2, loc.Column] == PIECE.NONE)
-            {
-                moves.Add(new Move(loc, new Location(loc.Row+2, loc.Column)));
-            }
+                //move foward 2
+                if(loc.Row == 1 && state.Board[loc.Row+1, loc.Column] == PIECE.NONE && state.Board[loc.Row+2, loc.Column] == PIECE.NONE)
+                {
+                    moves.Add(new Move(loc, new Location(loc.Row+2, loc.Column)));
+                }
 
-            //attack left
-            if(loc.Column != 0 && IsBlackPiece(state.Board[loc.Row+1, loc.Column-1]))
-            {
-                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
-            }
+                //attack up and left
+                if(loc.Column != 0 && IsBlackPiece(state.Board[loc.Row+1, loc.Column-1]))
+                {
+                    //attack and promote if on row 6)
+                    if(loc.Row == 6)
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.QUEEN));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.BISHOP));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.KNIGHT));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.ROOK));
+                    }
+                    else
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
+                    }
+                }
 
-            //attack right
-            if(loc.Column != 7 && IsBlackPiece(state.Board[loc.Row+1, loc.Column+1]))
-            {
-                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
+                //attack up and right
+                if(loc.Column != 7 && IsBlackPiece(state.Board[loc.Row+1, loc.Column+1]))
+                {
+                    //attach and promote if on row 6)
+                    if(loc.Row == 6)
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.QUEEN));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.BISHOP));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.KNIGHT));
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.ROOK));
+                    }
+                    else
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
+                    }
+                }
+
+
+                //EnPassante Left
+                if(state.EnPassantSquare?.Row == loc.Row+1 && state.EnPassantSquare?.Column == loc.Column-1)
+                {
+                    moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
+                }
+
+                //EnPassante Right
+                if(state.EnPassantSquare?.Row == loc.Row+1 && state.EnPassantSquare?.Column == loc.Column+1)
+                {
+                    moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
+                }
             }
         }
+        else
+        {
+            if(PIECE.BLACK_PAWN == state.Board[loc.Row, loc.Column])
+            {
+                if(state.Board[loc.Row-1, loc.Column] == PIECE.NONE)
+                {
+                    //move foward 1 for row 1 which would be a promotion
+                    if(loc.Row == 1)
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.QUEEN));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.BISHOP));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.KNIGHT));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.ROOK));
+                    }
+                    //move foward 1 for rows 1-5
+                    else
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column)));
+                    }
+                }
 
+                if(loc.Row == 6 && state.Board[loc.Row-1, loc.Column] == PIECE.NONE && state.Board[loc.Row-2, loc.Column] == PIECE.NONE)
+                {
+                    moves.Add(new Move(loc, new Location(loc.Row-2, loc.Column)));
+                }
+
+                //attack down and left
+                if(loc.Column != 0 && IsWhitePiece(state.Board[loc.Row-1, loc.Column-1]))
+                {
+                    //attack and promote if on row 1
+                    if(loc.Row == 1)
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.QUEEN));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.BISHOP));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.KNIGHT));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.ROOK));
+                    }
+                    else
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
+                    }
+                }
+
+                //attack down and right
+                if(loc.Column != 7 && IsWhitePiece(state.Board[loc.Row-1, loc.Column+1]))
+                {
+                    //attach and promote if on row 1
+                    if(loc.Row == 1)
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.QUEEN));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.BISHOP));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.KNIGHT));
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.ROOK));
+                    }
+                    else
+                    {
+                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
+                    }
+                }
+
+                //EnPassante Left
+                if(state.EnPassantSquare?.Row == loc.Row-1 && state.EnPassantSquare?.Column == loc.Column-1)
+                {
+                    moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
+                }
+
+                //EnPassante Right
+                if(state.EnPassantSquare?.Row == loc.Row-1 && state.EnPassantSquare?.Column == loc.Column+1)
+                {
+                    moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
+                }
+            }
+        }
 
         return moves;
     }
@@ -317,6 +436,22 @@ public static class ChessHelper
             }
         }
         return false;
+    }
+
+    private static bool IsWhitePiece(PIECE p)
+    {
+        switch(p)
+        {
+            case PIECE.WHITE_PAWN:
+            case PIECE.WHITE_ROOK:
+            case PIECE.WHITE_KNIGHT:
+            case PIECE.WHITE_BISHOP:
+            case PIECE.WHITE_QUEEN:
+            case PIECE.WHITE_KING:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private static bool IsBlackPiece(PIECE p)
