@@ -26,6 +26,14 @@ public enum PROMOTION_PIECE
     ROOK
 };
 
+public enum LOCATION_COLOR
+{
+    NO_PIECE,
+    WHITE,
+    BLACK
+};
+
+
 public enum PLAYER
 {
     WHITE,

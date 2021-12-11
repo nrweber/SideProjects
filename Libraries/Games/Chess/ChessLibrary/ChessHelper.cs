@@ -11,156 +11,58 @@ public static class ChessHelper
         // Remove any that result in the current color being in check.
         // Mate and Still Mate will have 0 moves returned.
 
-        //Make sure you account for promotion of pawns
-
         List<Move> moves = new();
 
+        // Add all moves possible by basic move rules. Moves that put
+        // the current players king into check will be removed later.
         if(state.CurrentTurn == PLAYER.WHITE)
         {
-            if(PIECE.WHITE_PAWN == state.Board[loc.Row, loc.Column])
+            switch(state.Board[loc.Row, loc.Column])
             {
-                if(state.Board[loc.Row+1, loc.Column] == PIECE.NONE)
-                {
-                    //move foward 1 for row 6 which would be a promotion
-                    if(loc.Row == 6)
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.QUEEN));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.BISHOP));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.KNIGHT));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.ROOK));
-                    }
-                    //move foward 1 for rows 1-5
-                    else
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column)));
-                    }
-                }
-
-                //move foward 2
-                if(loc.Row == 1 && state.Board[loc.Row+1, loc.Column] == PIECE.NONE && state.Board[loc.Row+2, loc.Column] == PIECE.NONE)
-                {
-                    moves.Add(new Move(loc, new Location(loc.Row+2, loc.Column)));
-                }
-
-                //attack up and left
-                if(loc.Column != 0 && IsBlackPiece(state.Board[loc.Row+1, loc.Column-1]))
-                {
-                    //attack and promote if on row 6)
-                    if(loc.Row == 6)
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.QUEEN));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.BISHOP));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.KNIGHT));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.ROOK));
-                    }
-                    else
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
-                    }
-                }
-
-                //attack up and right
-                if(loc.Column != 7 && IsBlackPiece(state.Board[loc.Row+1, loc.Column+1]))
-                {
-                    //attach and promote if on row 6)
-                    if(loc.Row == 6)
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.QUEEN));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.BISHOP));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.KNIGHT));
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.ROOK));
-                    }
-                    else
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
-                    }
-                }
-
-
-                //EnPassante Left
-                if(state.EnPassantSquare?.Row == loc.Row+1 && state.EnPassantSquare?.Column == loc.Column-1)
-                {
-                    moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
-                }
-
-                //EnPassante Right
-                if(state.EnPassantSquare?.Row == loc.Row+1 && state.EnPassantSquare?.Column == loc.Column+1)
-                {
-                    moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
-                }
+                case PIECE.WHITE_PAWN:
+                    AddWhitePawnMoves(loc, state, moves);
+                    break;
+                case PIECE.WHITE_ROOK:
+                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    break;
+                case PIECE.WHITE_KNIGHT:
+                    //Knight Moves
+                    break;
+                case PIECE.WHITE_BISHOP:
+                    //Diagonal Moves
+                    break;
+                case PIECE.WHITE_QUEEN:
+                    //ColumnRow Moves
+                    //Diagonal Moves
+                    break;
+                case PIECE.WHITE_KING:
+                    //King Moves
+                    break;
             }
         }
         else
         {
-            if(PIECE.BLACK_PAWN == state.Board[loc.Row, loc.Column])
+            switch(state.Board[loc.Row, loc.Column])
             {
-                if(state.Board[loc.Row-1, loc.Column] == PIECE.NONE)
-                {
-                    //move foward 1 for row 1 which would be a promotion
-                    if(loc.Row == 1)
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.QUEEN));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.BISHOP));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.KNIGHT));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.ROOK));
-                    }
-                    //move foward 1 for rows 1-5
-                    else
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column)));
-                    }
-                }
-
-                if(loc.Row == 6 && state.Board[loc.Row-1, loc.Column] == PIECE.NONE && state.Board[loc.Row-2, loc.Column] == PIECE.NONE)
-                {
-                    moves.Add(new Move(loc, new Location(loc.Row-2, loc.Column)));
-                }
-
-                //attack down and left
-                if(loc.Column != 0 && IsWhitePiece(state.Board[loc.Row-1, loc.Column-1]))
-                {
-                    //attack and promote if on row 1
-                    if(loc.Row == 1)
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.QUEEN));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.BISHOP));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.KNIGHT));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.ROOK));
-                    }
-                    else
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
-                    }
-                }
-
-                //attack down and right
-                if(loc.Column != 7 && IsWhitePiece(state.Board[loc.Row-1, loc.Column+1]))
-                {
-                    //attach and promote if on row 1
-                    if(loc.Row == 1)
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.QUEEN));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.BISHOP));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.KNIGHT));
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.ROOK));
-                    }
-                    else
-                    {
-                        moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
-                    }
-                }
-
-                //EnPassante Left
-                if(state.EnPassantSquare?.Row == loc.Row-1 && state.EnPassantSquare?.Column == loc.Column-1)
-                {
-                    moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
-                }
-
-                //EnPassante Right
-                if(state.EnPassantSquare?.Row == loc.Row-1 && state.EnPassantSquare?.Column == loc.Column+1)
-                {
-                    moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
-                }
+                case PIECE.BLACK_PAWN:
+                    AddBlackPawnMoves(loc, state, moves);
+                    break;
+                case PIECE.BLACK_ROOK:
+                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    break;
+                case PIECE.BLACK_KNIGHT:
+                    //Knight Moves
+                    break;
+                case PIECE.BLACK_BISHOP:
+                    //Diagonal Moves
+                    break;
+                case PIECE.BLACK_QUEEN:
+                    //ColumnRow Moves
+                    //Diagonal Moves
+                    break;
+                case PIECE.BLACK_KING:
+                    //King Moves
+                    break;
             }
         }
 
@@ -438,35 +340,228 @@ public static class ChessHelper
         return false;
     }
 
-    private static bool IsWhitePiece(PIECE p)
+    private static LOCATION_COLOR LocationColor(PIECE p)
     {
         switch(p)
         {
+            case PIECE.NONE:
+                return LOCATION_COLOR.NO_PIECE;
             case PIECE.WHITE_PAWN:
             case PIECE.WHITE_ROOK:
             case PIECE.WHITE_KNIGHT:
             case PIECE.WHITE_BISHOP:
             case PIECE.WHITE_QUEEN:
             case PIECE.WHITE_KING:
-                return true;
+                return LOCATION_COLOR.WHITE;
             default:
-                return false;
+                return LOCATION_COLOR.BLACK;
         }
     }
 
-    private static bool IsBlackPiece(PIECE p)
+    private static void AddWhitePawnMoves(Location loc, BoardState state, List<Move> moves)
     {
-        switch(p)
+        if(state.Board[loc.Row+1, loc.Column] == PIECE.NONE)
         {
-            case PIECE.BLACK_PAWN:
-            case PIECE.BLACK_ROOK:
-            case PIECE.BLACK_KNIGHT:
-            case PIECE.BLACK_BISHOP:
-            case PIECE.BLACK_QUEEN:
-            case PIECE.BLACK_KING:
-                return true;
-            default:
-                return false;
+            //move foward 1 for row 6 which would be a promotion
+            if(loc.Row == 6)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.QUEEN));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.BISHOP));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.KNIGHT));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column), PROMOTION_PIECE.ROOK));
+            }
+            //move foward 1 for rows 1-5
+            else
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column)));
+            }
         }
+
+        //move foward 2
+        if(loc.Row == 1 && state.Board[loc.Row+1, loc.Column] == PIECE.NONE && state.Board[loc.Row+2, loc.Column] == PIECE.NONE)
+        {
+            moves.Add(new Move(loc, new Location(loc.Row+2, loc.Column)));
+        }
+
+        //attack up and left
+        if(loc.Column != 0 && LOCATION_COLOR.BLACK == LocationColor(state.Board[loc.Row+1, loc.Column-1]))
+        {
+            //attack and promote if on row 6)
+            if(loc.Row == 6)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.QUEEN));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.BISHOP));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.KNIGHT));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1), PROMOTION_PIECE.ROOK));
+            }
+            else
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
+            }
+        }
+
+        //attack up and right
+        if(loc.Column != 7 && LOCATION_COLOR.BLACK == LocationColor(state.Board[loc.Row+1, loc.Column+1]))
+        {
+            //attach and promote if on row 6)
+            if(loc.Row == 6)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.QUEEN));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.BISHOP));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.KNIGHT));
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1), PROMOTION_PIECE.ROOK));
+            }
+            else
+            {
+                moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
+            }
+        }
+
+
+        //EnPassante Left
+        if(state.EnPassantSquare?.Row == loc.Row+1 && state.EnPassantSquare?.Column == loc.Column-1)
+        {
+            moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
+        }
+
+        //EnPassante Right
+        if(state.EnPassantSquare?.Row == loc.Row+1 && state.EnPassantSquare?.Column == loc.Column+1)
+        {
+            moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
+        }
+
+    }
+
+
+    private static void AddBlackPawnMoves(Location loc, BoardState state, List<Move> moves)
+    {
+        if(state.Board[loc.Row-1, loc.Column] == PIECE.NONE)
+        {
+            //move foward 1 for row 1 which would be a promotion
+            if(loc.Row == 1)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.QUEEN));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.BISHOP));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.KNIGHT));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column), PROMOTION_PIECE.ROOK));
+            }
+            //move foward 1 for rows 1-5
+            else
+            {
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column)));
+            }
+        }
+
+        if(loc.Row == 6 && state.Board[loc.Row-1, loc.Column] == PIECE.NONE && state.Board[loc.Row-2, loc.Column] == PIECE.NONE)
+        {
+            moves.Add(new Move(loc, new Location(loc.Row-2, loc.Column)));
+        }
+
+        //attack down and left
+        if(loc.Column != 0 && LOCATION_COLOR.WHITE == LocationColor(state.Board[loc.Row-1, loc.Column-1]))
+        {
+            //attack and promote if on row 1
+            if(loc.Row == 1)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.QUEEN));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.BISHOP));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.KNIGHT));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1), PROMOTION_PIECE.ROOK));
+            }
+            else
+            {
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
+            }
+        }
+
+        //attack down and right
+        if(loc.Column != 7 && LOCATION_COLOR.WHITE == LocationColor(state.Board[loc.Row-1, loc.Column+1]))
+        {
+            //attach and promote if on row 1
+            if(loc.Row == 1)
+            {
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.QUEEN));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.BISHOP));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.KNIGHT));
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1), PROMOTION_PIECE.ROOK));
+            }
+            else
+            {
+                moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
+            }
+        }
+
+        //EnPassante Left
+        if(state.EnPassantSquare?.Row == loc.Row-1 && state.EnPassantSquare?.Column == loc.Column-1)
+        {
+            moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
+        }
+
+        //EnPassante Right
+        if(state.EnPassantSquare?.Row == loc.Row-1 && state.EnPassantSquare?.Column == loc.Column+1)
+        {
+            moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
+        }
+    }
+
+    private static void AddColumnRowMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    {
+
+        //up
+        for(int r = loc.Row+1; r <= 7; r++)
+        {
+            int c = loc.Column;
+            var locColor = LocationColor(state.Board[r,c]);
+            if(locColor != playerColor)
+            {
+                moves.Add(new Move(loc, new Location(r, c)));
+            }
+
+            if(locColor != LOCATION_COLOR.NO_PIECE)
+                break;
+        }
+
+        //down
+        for(int r = loc.Row-1; r >= 0; r--)
+        {
+            int c = loc.Column;
+            var locColor = LocationColor(state.Board[r,c]);
+            if(locColor != playerColor)
+            {
+                moves.Add(new Move(loc, new Location(r, c)));
+            }
+
+            if(locColor != LOCATION_COLOR.NO_PIECE)
+                break;
+        }
+
+        //left
+        for(int c = loc.Column-1; c >= 0; c--)
+        {
+            int r = loc.Row;
+            var locColor = LocationColor(state.Board[r,c]);
+            if(locColor != playerColor)
+            {
+                moves.Add(new Move(loc, new Location(r, c)));
+            }
+
+            if(locColor != LOCATION_COLOR.NO_PIECE)
+                break;
+        }
+
+        //Right
+        for(int c = loc.Column+1; c <= 7; c++)
+        {
+            int r = loc.Row;
+            var locColor = LocationColor(state.Board[r,c]);
+            if(locColor != playerColor)
+            {
+                moves.Add(new Move(loc, new Location(r, c)));
+            }
+
+            if(locColor != LOCATION_COLOR.NO_PIECE)
+                break;
+        }
+
     }
 }
