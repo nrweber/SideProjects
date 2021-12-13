@@ -401,4 +401,42 @@ public class ChessHeplerTest_IsWhiteInCheck
 
         Assert.False(result);
     }
+
+    [Theory]
+    [InlineData(4,3,  5,2)]
+    [InlineData(4,3,  5,3)]
+    [InlineData(4,3,  5,4)]
+    [InlineData(4,3,  4,2)]
+    [InlineData(4,3,  4,4)]
+    [InlineData(4,3,  3,2)]
+    [InlineData(4,3,  3,3)]
+    [InlineData(4,3,  3,4)]
+    //Bonds checking
+    [InlineData(0,0,  0,1)]
+    [InlineData(7,4,  6,5)]
+    [InlineData(2,0,  2,1)]
+    [InlineData(6,7,  7,7)]
+    public void WhiteIsInCheck_ByOtherKing(int kingRow, int kingCol, int attackingRow, int attackingCol)
+    {
+        BoardState state = new()
+        {
+            Board = new PIECE[,]
+            {
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
+            }
+        };
+        state.Board[kingRow,kingCol] = PIECE.WHITE_KING;
+        state.Board[attackingRow, attackingCol] = PIECE.BLACK_KING;
+
+        bool result = ChessHelper.WhiteIsInCheck(state);
+
+        Assert.True(result);
+    }
 }

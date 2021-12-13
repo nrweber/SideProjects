@@ -12,7 +12,6 @@ public static class ChessHelper
         // Mate and Still Mate will have 0 moves returned.
 
         List<Move> moves = new();
-
         // Add all moves possible by basic move rules. Moves that put
         // the current players king into check will be removed later.
         if(state.CurrentTurn == PLAYER.WHITE)
@@ -26,17 +25,17 @@ public static class ChessHelper
                     AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_KNIGHT:
-                    //Knight Moves
+                    AddKnightMoves(loc, state, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_BISHOP:
-                    //Diagonal Moves
+                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_QUEEN:
-                    //ColumnRow Moves
-                    //Diagonal Moves
+                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_KING:
-                    //King Moves
+                    AddKingMoves(loc, state, moves, LOCATION_COLOR.WHITE);
                     break;
             }
         }
@@ -51,17 +50,17 @@ public static class ChessHelper
                     AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_KNIGHT:
-                    //Knight Moves
+                    AddKnightMoves(loc, state, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_BISHOP:
-                    //Diagonal Moves
+                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_QUEEN:
-                    //ColumnRow Moves
-                    //Diagonal Moves
+                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_KING:
-                    //King Moves
+                    AddKingMoves(loc, state, moves, LOCATION_COLOR.BLACK);
                     break;
             }
         }
@@ -85,7 +84,8 @@ public static class ChessHelper
                 PawnAttackingKing(state, PLAYER.WHITE, loc.row, loc.col) ||
                 KnightAttackingKing(state, PLAYER.WHITE, loc.row, loc.col) ||
                 DiagonalAttackinOnKing(state, PLAYER.WHITE, loc.row, loc.col) ||
-                ColumnRowAttackOnKing(state, PLAYER.WHITE, loc.row, loc.col)
+                ColumnRowAttackOnKing(state, PLAYER.WHITE, loc.row, loc.col) ||
+                KingAttackOnKing(state, PLAYER.WHITE, loc.row, loc.col)
           )
         {
             return true;
@@ -105,7 +105,8 @@ public static class ChessHelper
                 PawnAttackingKing(state, PLAYER.BLACK, loc.row, loc.col) ||
                 KnightAttackingKing(state, PLAYER.BLACK, loc.row, loc.col) ||
                 DiagonalAttackinOnKing(state, PLAYER.BLACK, loc.row, loc.col) ||
-                ColumnRowAttackOnKing(state, PLAYER.BLACK, loc.row, loc.col)
+                ColumnRowAttackOnKing(state, PLAYER.BLACK, loc.row, loc.col) ||
+                KingAttackOnKing(state, PLAYER.BLACK, loc.row, loc.col)
           )
         {
             return true;
@@ -340,6 +341,29 @@ public static class ChessHelper
         return false;
     }
 
+    private static bool KingAttackOnKing(BoardState state, PLAYER player, int kingRow, int kingCol)
+    {
+        // This function may seem strange since it is illegal for a king to move to be in position to attack a king.
+        // but that is exactly why we need this function. This is useful when checking if a move is legal.
+        PIECE otherColorKing = (player == PLAYER.WHITE) ? PIECE.BLACK_KING : PIECE.WHITE_KING;
+        List<(int rowDiff, int colDiff)> diffs = new(){(1, -1), (1,0), (1,1), (0, -1), (0, 1), (-1, -1), (-1, 0), (-1, 1)};
+
+        foreach(var diff in diffs)
+        {
+            int r = kingRow + diff.rowDiff;
+            int c = kingCol + diff.colDiff;
+            if(  r >= 0 && r <= 7 && c >= 0 && c <= 7)
+            {
+                if(state.Board[r,c] == otherColorKing)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private static LOCATION_COLOR LocationColor(PIECE p)
     {
         switch(p)
@@ -506,62 +530,87 @@ public static class ChessHelper
 
     private static void AddColumnRowMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
     {
+        List<(int rowDiff, int colDiff)> diffs = new(){ (1,0), (-1,0), (0, -1), (0,1)};
 
-        //up
-        for(int r = loc.Row+1; r <= 7; r++)
+        foreach(var p in diffs)
         {
-            int c = loc.Column;
-            var locColor = LocationColor(state.Board[r,c]);
-            if(locColor != playerColor)
+            int r = loc.Row+p.rowDiff;
+            int c = loc.Column+p.colDiff;
+            while(r >= 0 && r <= 7 && c >= 0 && c <= 7)
+            {
+                var locColor = LocationColor(state.Board[r,c]);
+                if(locColor != playerColor)
+                {
+                    moves.Add(new Move(loc, new Location(r, c)));
+                }
+
+                if(locColor != LOCATION_COLOR.NO_PIECE)
+                {
+                    break;
+                }
+
+                r += p.rowDiff;
+                c += p.colDiff;
+            }
+        }
+    }
+
+    private static void AddDiagonalMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    {
+        List<(int rowDiff, int colDiff)> diffs = new(){ (1,-1), (1,1), (-1, 1), (-1,-1)};
+        foreach(var p in diffs)
+        {
+            int r = loc.Row+p.rowDiff;
+            int c = loc.Column+p.colDiff;
+            while(r >= 0 && r <= 7 && c >= 0 && c <= 7)
+            {
+                var locColor = LocationColor(state.Board[r,c]);
+                if(locColor != playerColor)
+                {
+                    moves.Add(new Move(loc, new Location(r, c)));
+                }
+
+                if(locColor != LOCATION_COLOR.NO_PIECE)
+                {
+                    break;
+                }
+
+                r += p.rowDiff;
+                c += p.colDiff;
+            }
+        }
+    }
+
+
+    private static void AddKnightMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    {
+        List<(int rowDiff, int colDiff)> diffs = new(){(2,-1), (2,1), (1,2), (-1,2), (-2,1), (-2,-1), (-1,-2), (1,-2)};
+
+        foreach(var diff in diffs)
+        {
+            int r = loc.Row + diff.rowDiff;
+            int c = loc.Column + diff.colDiff;
+
+            if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(state.Board[r,c]))
             {
                 moves.Add(new Move(loc, new Location(r, c)));
             }
-
-            if(locColor != LOCATION_COLOR.NO_PIECE)
-                break;
         }
+    }
 
-        //down
-        for(int r = loc.Row-1; r >= 0; r--)
+    private static void AddKingMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    {
+        List<(int rowDiff, int colDiff)> diffs = new(){(1,-1), (1,0), (1,1), (0,-1), (0,1), (-1,-1), (-1,0), (-1,1)};
+
+        foreach(var diff in diffs)
         {
-            int c = loc.Column;
-            var locColor = LocationColor(state.Board[r,c]);
-            if(locColor != playerColor)
+            int r = loc.Row + diff.rowDiff;
+            int c = loc.Column + diff.colDiff;
+
+            if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(state.Board[r,c]))
             {
                 moves.Add(new Move(loc, new Location(r, c)));
             }
-
-            if(locColor != LOCATION_COLOR.NO_PIECE)
-                break;
         }
-
-        //left
-        for(int c = loc.Column-1; c >= 0; c--)
-        {
-            int r = loc.Row;
-            var locColor = LocationColor(state.Board[r,c]);
-            if(locColor != playerColor)
-            {
-                moves.Add(new Move(loc, new Location(r, c)));
-            }
-
-            if(locColor != LOCATION_COLOR.NO_PIECE)
-                break;
-        }
-
-        //Right
-        for(int c = loc.Column+1; c <= 7; c++)
-        {
-            int r = loc.Row;
-            var locColor = LocationColor(state.Board[r,c]);
-            if(locColor != playerColor)
-            {
-                moves.Add(new Move(loc, new Location(r, c)));
-            }
-
-            if(locColor != LOCATION_COLOR.NO_PIECE)
-                break;
-        }
-
     }
 }

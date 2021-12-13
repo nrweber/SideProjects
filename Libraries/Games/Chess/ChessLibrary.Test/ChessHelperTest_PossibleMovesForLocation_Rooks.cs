@@ -172,37 +172,37 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
     [Theory]
     [InlineData(PLAYER.WHITE)]
     [InlineData(PLAYER.BLACK)]
-    public static void RightOfBoard_5_0_NoBlockers(PLAYER player)
+    public static void RightOfBoard_4_7_NoBlockers(PLAYER player)
     {
         BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[5,0] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+        state.Board[4,7] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
 
-        Location loc = new(5,0);
+        Location loc = new(4,7);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
                 //up
-                item => Assert.True(item.Equals(new Move(loc, new Location(6,0)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(7,0)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(5,7)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(6,7)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(7,7)))),
 
                 //down
-                item => Assert.True(item.Equals(new Move(loc, new Location(4,0)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(3,0)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(2,0)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(1,0)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(0,0)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(3,7)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(2,7)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(1,7)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(0,7)))),
 
-                //left - none
+                //left
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,6)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,5)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,4)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,3)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,2)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,1)))),
+                item => Assert.True(item.Equals(new Move(loc, new Location(4,0))))
 
-                //right
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,1)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,2)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,3)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,4)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,5)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,6)))),
-                item => Assert.True(item.Equals(new Move(loc, new Location(5,7))))
+                //right - none
                 );
     }
 
