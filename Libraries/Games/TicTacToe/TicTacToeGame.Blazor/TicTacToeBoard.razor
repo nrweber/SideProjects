@@ -1,0 +1,69 @@
+@using TicTacToeGame
+
+<div>
+    <table>
+
+    @for(var i = 0; i < game.Board.Length; i++)
+    {
+        var selectionIndex = i;
+        if(i % 3 == 0)
+        {
+            @:<tr>
+        }
+
+        <td>
+            <div class="card numberCard @(LocCssClass(i))" @onclick="@(() => DoMove(selectionIndex))">
+                    <div class="number">@(LocDisplayValue(i))</div>
+            </div>
+        </td>
+
+        @if(i % 3 == 2)
+        {
+            @:</tr>
+        }
+
+    }
+
+    </table>
+</div>
+
+<div style="padding: 10px">
+    <button @onclick="NewGame">New Game</button>
+</div>
+
+
+@code
+{
+    TicTacToe game = new TicTacToe();
+
+    string LocCssClass(int location)
+    {
+        if( Array.IndexOf(game.WinningPath, location) > -1)
+            return "winningCard";
+        if(game.Winner == 3)
+            return "catGameCard";
+        return "";
+    }
+
+    string LocDisplayValue(int location)
+    {
+        var board = game.Board;
+        if(board[location] == 1)
+            return "X";
+        if(board[location] == 2)
+            return "O";
+
+        return "_";
+    }
+
+    void NewGame()
+    {
+        game = new TicTacToe();
+    }
+
+    void DoMove(int movLoc)
+    {
+        game.Place(movLoc);
+        InvokeAsync(() => StateHasChanged());
+    }
+}

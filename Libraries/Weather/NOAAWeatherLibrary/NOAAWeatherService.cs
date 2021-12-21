@@ -1,5 +1,4 @@
-using System;
-using System.Threading.Tasks;
+using System; using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
 
@@ -38,9 +37,20 @@ namespace NOAAWeather
             String url = $"https://api.weather.gov/stations/{stationId}/observations";
             var all =  await http.GetFromJsonAsync<AllObservations>(url);
 
+            Observation latestObservation = null;
             if(all != null && all.Feature.Count > 0)
-                return all.Feature[0];
-            return null;
+            {
+                latestObservation = all.Feature[0];
+
+                foreach(var o in all.Feature)
+                {
+                    if(latestObservation.Properties.Timestamp < o.Properties.Timestamp)
+                    {
+                        latestObservation = o;
+                    }
+                }
+            }
+            return latestObservation;
         }
     }
 }

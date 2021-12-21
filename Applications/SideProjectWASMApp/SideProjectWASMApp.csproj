@@ -1,17 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.7" PrivateAssets="all" />
-    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\Games\FifteenPuzzle\FifteenPuzzleGame.Blazor\FifteenPuzzleGame.Blazor.csproj" />
+    <ProjectReference Include="..\..\Libraries\Games\TicTacToe\TicTacToeGame.Blazor\TicTacToeGame.Blazor.csproj" />
+    <ProjectReference Include="..\..\Libraries\Weather\NOAAWeatherLibrary\NOAAWeatherLibrary.csproj" />
+    <ProjectReference Include="..\..\Libraries\Weather\Weather.Blazor\Weather.Blazor.csproj" />
   </ItemGroup>
 
 </Project>

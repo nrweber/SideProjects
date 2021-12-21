@@ -1,0 +1,55 @@
+﻿@inject NOAAWeatherService weather
+
+<h3>My Local Weather</h3>
+
+@if (observation == null)
+{
+    <div>Loading....</div>
+}
+else
+{
+    <div>
+        <div class="WeatherData">
+            <div class="Conditions">
+                <img src="@observation.Properties.Icon" />
+                <div>@observation.Properties.TextDescription</div>
+            </div>
+            <div class="Temperature">
+                <div class="TempF">@(TempInF())&deg; </div>
+                <div class="TempC">@(observation.Properties.Temperature.Value)&deg; C</div>
+            </div>
+        </div>
+        <div class="Time">@observation.Properties.Timestamp</div>
+        <div class="Source">Source: NOAA</div>
+    </div>
+}
+
+
+
+@code {
+
+
+    [Parameter]
+    public string Location { get; set; } = "KFWS";
+
+    Observation? observation = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        observation = await weather.GetObservationForStationAsync(Location);
+    }
+
+
+    int TempInF()
+    {
+        if(observation?.Properties.Temperature.Value == null)
+        {
+            return -500;
+        }
+
+
+        double temp = (double)observation.Properties.Temperature.Value;
+
+        return (int)((temp*1.8)+32);
+    }
+}

@@ -8,7 +8,7 @@ namespace FifteenPuzzleGame.Test
         [Fact]
         public void BoardSizeIs16()
         {
-            FifteenPuzzle p = new();
+            FifteenPuzzleService p = new();
 
             Assert.Equal(16, p.CurrentBoard.Length);
         }
@@ -16,7 +16,7 @@ namespace FifteenPuzzleGame.Test
         [Fact]
         public void NumbersOfZeroToFiftenAreOnTheBoard()
         {
-            FifteenPuzzle p = new();
+            FifteenPuzzleService p = new();
 
             var board = p.CurrentBoard;
 
@@ -35,7 +35,7 @@ namespace FifteenPuzzleGame.Test
         [Fact]
         public void ZeroIsInTheLastPositionToStart()
         {
-            FifteenPuzzle p = new();
+            FifteenPuzzleService p = new();
 
             var board = p.CurrentBoard;
 
@@ -47,7 +47,7 @@ namespace FifteenPuzzleGame.Test
         {
             int[] toPassIn = new int[] {1,6,2,7,3,8,4,9,5,10,11,15,12,14,13, 0};
 
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
 
             Assert.Equal(toPassIn, p.CurrentBoard);
         }
@@ -88,7 +88,7 @@ namespace FifteenPuzzleGame.Test
                                         9,0,10,11,
                                         12,13,14,15};
 
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
             p.Move(moveLoc);
 
             if(expectedOutput == null)
@@ -136,7 +136,7 @@ namespace FifteenPuzzleGame.Test
                                         9,10,11,12,
                                         13,14,15,0};
 
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
             p.Move(moveLoc);
 
             if(expectedOutput == null)
@@ -184,7 +184,7 @@ namespace FifteenPuzzleGame.Test
                                         9,10,11,12,
                                         13,14,15,0};
 
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
             p.Move(moveLoc);
 
             if(expectedOutput == null)
@@ -232,7 +232,7 @@ namespace FifteenPuzzleGame.Test
                                         8,9,10,11,
                                         12,13,14,15};
 
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
             p.Move(moveLoc);
 
             if(expectedOutput == null)
@@ -280,7 +280,7 @@ namespace FifteenPuzzleGame.Test
                                         8,9,10,11,
                                         12,13,14,15};
 
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
             p.Move(moveLoc);
 
             if(expectedOutput == null)
@@ -313,7 +313,7 @@ namespace FifteenPuzzleGame.Test
                                         4,5,6,7,
                                         8,9,10,11,
                                         12,13,14,15};
-            FifteenPuzzle p = new(toPassIn);
+            FifteenPuzzleService p = new(toPassIn);
 
             p.Move(moveLoc);
 
@@ -323,7 +323,7 @@ namespace FifteenPuzzleGame.Test
         [Fact]
         public void ValuesOfCurrentBoardCannotBeChangedExternally()
         {
-            FifteenPuzzle p = new();
+            FifteenPuzzleService p = new();
 
             p.CurrentBoard[8] = 1000;
             Assert.NotEqual(1000, p.CurrentBoard[8]);
