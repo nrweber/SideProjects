@@ -41,7 +41,7 @@ public enum PLAYER
 };
 
 
-public record class BoardState
+public record struct BoardState
 {
     // Chess boards and arrays are layed out different so the rows in the board are backwards. The ROWS not the cells.
     // This is how a real board would look:
@@ -53,6 +53,34 @@ public record class BoardState
     //    Board[2]
     //    Board[1]
     //    Board[0]
+
+    public BoardState()
+    {
+
+    }
+
+    public BoardState(BoardState otherState)
+    {
+        for(int r = 0; r <= 7; r++)
+        {
+            for(int c = 0; c <=7; c++)
+            {
+                this.Board[r,c] = otherState.Board[r,c];
+            }
+        }
+        CurrentTurn = otherState.CurrentTurn;
+
+        WhiteCanKingCastle = otherState.WhiteCanKingCastle;
+        WhiteCanQueenCastle = otherState.WhiteCanQueenCastle;
+        BlackCanKingCastle = otherState.BlackCanKingCastle;
+        BlackCanQueenCastle = otherState.BlackCanQueenCastle;
+
+        EnPassantSquare = otherState.EnPassantSquare;
+
+        HalfMovesSinceLastCaptureOrPawnMove = otherState.HalfMovesSinceLastCaptureOrPawnMove;;
+        MoveNumber = otherState.MoveNumber;
+
+    }
 
     public PIECE[,] Board = new PIECE[,]
     {

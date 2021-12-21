@@ -5,12 +5,22 @@ namespace ChessLibrary;
 
 public static class ChessHelper
 {
+    public static List<Move> PossibleMoves(BoardState state)
+    {
+        List<Move> moves = new();
+        for(int r = 0; r <= 7; r++)
+        {
+            for(int c = 0; c <= 7; c++)
+            {
+                var loc = new Location(r,c);
+                moves.AddRange(PossibleMovesForLocation(state, loc));
+            }
+        }
+        return moves;
+    }
+
     public static List<Move> PossibleMovesForLocation(BoardState state, Location loc)
     {
-        //Generate all possible moves by the normal rules of the pieces
-        // Remove any that result in the current color being in check.
-        // Mate and Still Mate will have 0 moves returned.
-
         List<Move> moves = new();
         // Add all moves possible by basic move rules. Moves that put
         // the current players king into check will be removed later.
@@ -65,20 +75,122 @@ public static class ChessHelper
             }
         }
 
-        return moves;
+        List<Move> goodMoves = new();
+        foreach(var move in moves)
+        {
+            BoardState stateCopy = new(state);
+            stateCopy.Board[move.End.Row, move.End.Column] = stateCopy.Board[move.Start.Row, move.Start.Column];
+            stateCopy.Board[move.Start.Row, move.Start.Column] = PIECE.NONE;
+
+            if(state.CurrentTurn == PLAYER.WHITE && false == WhiteIsInCheck(stateCopy))
+            {
+                goodMoves.Add(move);
+            }
+            if(state.CurrentTurn == PLAYER.BLACK && false == BlackIsInCheck(stateCopy))
+            {
+                goodMoves.Add(move);
+            }
+        }
+
+        return goodMoves;
     }
 
-    public static bool MakeMove(BoardState state, Move newMove)
+    public static (bool moveMade, BoardState newState) MakeMove(BoardState originalState, Move newMove)
     {
-        return false;
+        ////////////////////////////////////////////////////
+        // Copy the state
+        BoardState state = new(originalState);
+
+        ////////////////////////////////////////////////////
+        // Check if it is a valid move
+        var validMoves = PossibleMoves(state);
+        if(false == validMoves.Contains(newMove))
+        {
+            return (false, originalState);
+        }
+
+        ////////////////////////////////////////////////////
+        // Useful info from move
+        Location startLoc = newMove.Start;
+        PIECE pieceAtStartLocation = state.Board[startLoc.Row, startLoc.Column];
+        Location endLoc = newMove.End;
+        PIECE pieceAtEndLocation = state.Board[endLoc.Row, endLoc.Column];
+
+
+        ////////////////////////////////////////////////////
+        // Update Board (castling moves two pieces)
+        state.Board[newMove.End.Row, newMove.End.Column] = state.Board[newMove.Start.Row, newMove.Start.Column];
+        state.Board[newMove.Start.Row, newMove.Start.Column] = PIECE.NONE;
+
+
+
+        ////////////////////////////////////////////////////
+        // Flip turn
+        state.CurrentTurn = (state.CurrentTurn == PLAYER.WHITE) ? PLAYER.BLACK : PLAYER.WHITE;
+
+        ////////////////////////////////////////////////////
+        // Check casteling possibilities
+        if(pieceAtStartLocation == PIECE.WHITE_KING)
+        {
+            state.WhiteCanKingCastle = false;
+            state.WhiteCanQueenCastle = false;
+        }
+
+        if(pieceAtStartLocation == PIECE.BLACK_KING)
+        {
+            state.BlackCanKingCastle = false;
+            state.BlackCanQueenCastle = false;
+        }
+
+        //White Rook Moves
+        if(pieceAtStartLocation == PIECE.WHITE_ROOK && startLoc.Row == 0 && startLoc.Column == 7)
+            state.WhiteCanKingCastle = false;
+        if(pieceAtStartLocation == PIECE.WHITE_ROOK && startLoc.Row == 0 && startLoc.Column == 0)
+            state.WhiteCanQueenCastle = false;
+
+        if(pieceAtStartLocation == PIECE.BLACK_ROOK && startLoc.Row == 7 && startLoc.Column == 7)
+            state.BlackCanKingCastle = false;
+        if(pieceAtStartLocation == PIECE.BLACK_ROOK && startLoc.Row == 7 && startLoc.Column == 0)
+            state.BlackCanQueenCastle = false;
+
+
+        ////////////////////////////////////////////////////
+        // check en passante
+        state.EnPassantSquare = null;
+        if(pieceAtStartLocation == PIECE.WHITE_PAWN && startLoc.Row == 1 && endLoc.Row == 3)
+        {
+            state.EnPassantSquare = new Location(2, startLoc.Column);
+        }
+        if(pieceAtStartLocation == PIECE.BLACK_PAWN && startLoc.Row == 6 && endLoc.Row == 4)
+        {
+            state.EnPassantSquare = new Location(5, startLoc.Column);
+        }
+
+        ////////////////////////////////////////////////////
+        // update half move counter
+        if( PIECE.WHITE_PAWN == pieceAtStartLocation || PIECE.BLACK_PAWN == pieceAtStartLocation || PIECE.NONE != pieceAtEndLocation)
+            state.HalfMovesSinceLastCaptureOrPawnMove = 0;
+        else
+            state.HalfMovesSinceLastCaptureOrPawnMove += 1;
+
+        ////////////////////////////////////////////////////
+        // up trun if was black's turn
+        if(state.CurrentTurn == PLAYER.WHITE)
+            state.MoveNumber += 1;
+
+        return (true, state);
     }
 
     public static bool WhiteIsInCheck(BoardState state)
     {
         //Find the White King
         var loc = FindPiece(state, PIECE.WHITE_KING);
+
+        // White is not in check if ther is no king.
+        // These allows the BoardState to be used for other things then a game
+        // such as setting up a situation to explain tactics or something like that
         if(loc.row == -1)
-            throw new Exception("Could not find the white king piece");
+            return false;
 
         if(
                 PawnAttackingKing(state, PLAYER.WHITE, loc.row, loc.col) ||
@@ -98,8 +210,12 @@ public static class ChessHelper
     {
         //Find the Black King
         var loc = FindPiece(state, PIECE.BLACK_KING);
+
+        // Black is not in check if ther is no king.
+        // These allows the BoardState to be used for other things then a game
+        // such as setting up a situation to explain tactics or something like that
         if(loc.row == -1)
-            throw new Exception("Could not find the white king piece");
+            return false;
 
         if(
                 PawnAttackingKing(state, PLAYER.BLACK, loc.row, loc.col) ||
@@ -319,6 +435,7 @@ public static class ChessHelper
             {
                 int checkRow = kingRow + (i*diff.rowDiff);
                 int checkCol = kingCol + (i*diff.colDiff);
+
 
                 //stop at the edge of the board
                 if(checkRow < 0 || checkRow > 7 || checkCol < 0 || checkCol > 7)
@@ -610,6 +727,33 @@ public static class ChessHelper
             if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(state.Board[r,c]))
             {
                 moves.Add(new Move(loc, new Location(r, c)));
+            }
+        }
+
+        if( playerColor == LOCATION_COLOR.WHITE && loc.Row == 0 && loc.Column == 4)
+        {
+            if(state.WhiteCanKingCastle == true && state.Board[0,5] == PIECE.NONE && state.Board[0,6] == PIECE.NONE && state.Board[0,7] == PIECE.WHITE_ROOK)
+            {
+                moves.Add(new Move(loc, new Location(0, 6)));
+            }
+
+            if( state.WhiteCanQueenCastle == true && state.Board[0,3] == PIECE.NONE && state.Board[0,2] == PIECE.NONE && state.Board[0,1] == PIECE.NONE && state.Board[0,0] == PIECE.WHITE_ROOK
+              )
+            {
+                moves.Add(new Move(loc, new Location(0, 2)));
+            }
+        }
+
+        if( playerColor == LOCATION_COLOR.BLACK && loc.Row == 7 && loc.Column == 4)
+        {
+            if( state.BlackCanKingCastle == true && state.Board[7,5] == PIECE.NONE && state.Board[7,6] == PIECE.NONE && state.Board[7,7] == PIECE.BLACK_ROOK)
+            {
+                moves.Add(new Move(loc, new Location(7, 6)));
+            }
+
+            if( state.BlackCanQueenCastle == true && state.Board[7,3] == PIECE.NONE && state.Board[7,2] == PIECE.NONE && state.Board[7,1] == PIECE.NONE && state.Board[7,0] == PIECE.BLACK_ROOK)
+            {
+                moves.Add(new Move(loc, new Location(7, 2)));
             }
         }
     }
