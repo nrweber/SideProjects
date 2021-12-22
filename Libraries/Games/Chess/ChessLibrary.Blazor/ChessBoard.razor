@@ -1,0 +1,104 @@
+﻿<table id="BoardTable">
+    @for(int r = 7; r >= 0; r--)
+    {
+        <tr>
+            @for(int c = 0; c <= 7; c++)
+            {
+                var lr = r;
+                var lc = c;
+
+                <td class="@CellClasses(r,c)"><div class="cellContent @CellContentClasses(r,c)" @onclick="() => CellClicked(lr,lc)">
+                @if(state.Board[r,c] != PIECE.NONE)
+                {
+                    <img class="PieceImg" src="@PieceImageString(state.Board[r,c])" />
+                }
+                </div></td>
+            }
+        </tr>
+    }
+</table>
+<div>@TurnIndictor</div>
+
+@code
+{
+    BoardState state = new();
+
+    Location lastClickedLocation = new Location(-1,-1);
+    List<Location> possibleMoveLocations = new();
+
+    string TurnIndictor = "White's turn";
+
+    void CellClicked(int r, int c)
+    {
+        Location newLocation = new Location(r,c);
+
+        (_, state) = ChessHelper.MakeMove(state, new Move(lastClickedLocation, newLocation));
+
+        lastClickedLocation = newLocation;
+
+        Update();
+    }
+
+    void Update()
+    {
+        SetTurnText();
+        SetPossibleMoveSquares();
+    }
+
+    void SetTurnText()
+    {
+        TurnIndictor = (state.CurrentTurn == PLAYER.WHITE) ? "White's turn" : "Black's turn";
+    }
+
+    void SetPossibleMoveSquares()
+    {
+        var moves = ChessHelper.PossibleMovesForLocation(state, lastClickedLocation);
+
+        possibleMoveLocations = new();
+        foreach(var m in moves)
+        {
+            possibleMoveLocations.Add(m.End);
+        }
+    }
+
+    string CellClasses(int r, int c)
+    {
+        string classes = "";
+        classes += ((r+c)%2 == 0) ? "evenCell " : "oddCell ";
+
+        return classes;
+    }
+
+    string CellContentClasses(int r, int c)
+    {
+        Location contentLocation = new(r,c);
+
+        string classes = "";
+
+        if(lastClickedLocation == contentLocation)
+            classes += "cellSelected ";
+        if(possibleMoveLocations.Contains(contentLocation))
+            classes += "cellPossible ";
+
+        return classes;
+    }
+
+    string PieceImageString(PIECE p)
+    {
+        var pieceName = "";
+        if(p == PIECE.WHITE_KING) pieceName = "wk";
+        if(p == PIECE.WHITE_QUEEN) pieceName = "wq";
+        if(p == PIECE.WHITE_BISHOP) pieceName = "wb";
+        if(p == PIECE.WHITE_KNIGHT) pieceName = "wn";
+        if(p == PIECE.WHITE_ROOK) pieceName = "wr";
+        if(p == PIECE.WHITE_PAWN) pieceName = "wp";
+        if(p == PIECE.BLACK_KING) pieceName = "bk";
+        if(p == PIECE.BLACK_QUEEN) pieceName = "bq";
+        if(p == PIECE.BLACK_BISHOP) pieceName = "bb";
+        if(p == PIECE.BLACK_KNIGHT) pieceName = "bn";
+        if(p == PIECE.BLACK_ROOK) pieceName = "br";
+        if(p == PIECE.BLACK_PAWN) pieceName = "bp";
+        return $"_content/ChessLibrary.Blazor/chessPieces/{pieceName}.svg";
+    }
+
+}
