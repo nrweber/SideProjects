@@ -222,6 +222,41 @@ public class ChessHeplerTest_MakeMove
     }
 
     [Fact]
+    public void WhiteKingSideCastleMovesKingAndRook()
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.WHITE);
+        state.WhiteCanKingCastle = true;
+
+        state.Board[0,4] = PIECE.WHITE_KING;
+        state.Board[0,7] = PIECE.WHITE_ROOK;
+
+        Move m = new Move(new Location(0,4), new Location(0,6));
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.True(moveMade);
+        Assert.Equal(PIECE.WHITE_KING, state.Board[0,6]);
+        Assert.Equal(PIECE.WHITE_ROOK, state.Board[0,5]);
+        Assert.Equal(PIECE.NONE, state.Board[0,7]);
+    }
+
+    [Fact]
+    public void WhiteQueenSideCastleMovesKingAndRook()
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.WHITE);
+        state.WhiteCanQueenCastle = true;
+
+        state.Board[0,4] = PIECE.WHITE_KING;
+        state.Board[0,0] = PIECE.WHITE_ROOK;
+
+        Move m = new Move(new Location(0,4), new Location(0,2));
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.True(moveMade);
+        Assert.Equal(PIECE.WHITE_KING, state.Board[0,2]);
+        Assert.Equal(PIECE.WHITE_ROOK, state.Board[0,3]);
+        Assert.Equal(PIECE.NONE, state.Board[0,0]);
+    }
+
+
+    [Fact]
     public void BlackKingCastlingFalseAfterRookMovesOffg8Square_QueenCastlingStaysTrue()
     {
         BoardState state = CreateStateWithBlankBoard(PLAYER.BLACK);
@@ -275,6 +310,39 @@ public class ChessHeplerTest_MakeMove
         Assert.True(state.BlackCanQueenCastle);
     }
 
+    [Fact]
+    public void BlackKingSideCastleMovesKingAndRook()
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.BLACK);
+        state.BlackCanKingCastle = true;
+
+        state.Board[7,4] = PIECE.BLACK_KING;
+        state.Board[7,7] = PIECE.BLACK_ROOK;
+
+        Move m = new Move(new Location(7,4), new Location(7,6));
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.True(moveMade);
+        Assert.Equal(PIECE.BLACK_KING, state.Board[7,6]);
+        Assert.Equal(PIECE.BLACK_ROOK, state.Board[7,5]);
+        Assert.Equal(PIECE.NONE, state.Board[7,7]);
+    }
+
+    [Fact]
+    public void BlackQueenSideCastleMovesKingAndRook()
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.BLACK);
+        state.BlackCanQueenCastle = true;
+
+        state.Board[7,4] = PIECE.BLACK_KING;
+        state.Board[7,0] = PIECE.BLACK_ROOK;
+
+        Move m = new Move(new Location(7,4), new Location(7,2));
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.True(moveMade);
+        Assert.Equal(PIECE.BLACK_KING, state.Board[7,2]);
+        Assert.Equal(PIECE.BLACK_ROOK, state.Board[7,3]);
+        Assert.Equal(PIECE.NONE, state.Board[7,0]);
+    }
 
     [Fact]
     public void MoveCountIncreasedAfterBlackMove()
@@ -370,4 +438,47 @@ public class ChessHeplerTest_MakeMove
         Assert.True(moveMade);
         Assert.Null(state.EnPassantSquare);
     }
+
+
+    [Theory]
+    [InlineData(4,3,  5,4, 4,4)]
+    [InlineData(4,3,  5,2, 4,2)]
+    public void EnPassante_White_AttackedPieceIsRemoved(int startRow, int startCol, int epRow, int epCol, int otherRow, int otherCol)
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.WHITE);
+        state.EnPassantSquare = new Location(epRow,epCol);
+
+        state.Board[startRow,startCol] = PIECE.WHITE_PAWN;
+        state.Board[otherRow,otherCol] = PIECE.BLACK_PAWN;
+
+        Move m = new Move(new Location(startRow,startCol), new Location(epRow,epCol));
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.True(moveMade);
+        Assert.Equal(state.Board[startRow,startCol], PIECE.NONE);
+        Assert.Equal(state.Board[otherRow,otherCol], PIECE.NONE);
+        Assert.Equal(state.Board[epRow,epCol], PIECE.WHITE_PAWN);
+
+    }
+
+    [Theory]
+    [InlineData(3,5,  2,6, 3,6)]
+    [InlineData(3,5,  2,4, 3,4)]
+    public void EnPassante_Black_AttackedPieceIsRemoved(int startRow, int startCol, int epRow, int epCol, int otherRow, int otherCol)
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.BLACK);
+        state.EnPassantSquare = new Location(epRow,epCol);
+
+        state.Board[startRow,startCol] = PIECE.BLACK_PAWN;
+        state.Board[otherRow,otherCol] = PIECE.WHITE_PAWN;
+
+        Move m = new Move(new Location(startRow,startCol), new Location(epRow,epCol));
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.True(moveMade);
+        Assert.Equal(state.Board[startRow,startCol], PIECE.NONE);
+        Assert.Equal(state.Board[otherRow,otherCol], PIECE.NONE);
+        Assert.Equal(state.Board[epRow,epCol], PIECE.BLACK_PAWN);
+
+    }
+
+
 }
