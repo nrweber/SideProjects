@@ -1,4 +1,4 @@
-namespace ChessLibrary;
+namespace ChessLibrary.Engines;
 
 public static class UciDecoder
 {
@@ -43,6 +43,14 @@ public static class UciDecoder
                     info.MateScore = Int32.Parse(infoGroup[2]);
                 }
             }
+            if(infoGroup[0] == "multipv")
+            {
+                info.MultiPV = Int32.Parse(infoGroup[1]);
+            }
+            if(infoGroup[0] == "pv")
+            {
+                info.Move = infoGroup[1];
+            }
         }
 
         return info;
@@ -50,9 +58,3 @@ public static class UciDecoder
 }
 
 
-public record struct UciInfo
-{
-    public int? Depth;
-    public int? CPScore;
-    public int? MateScore;
-}
