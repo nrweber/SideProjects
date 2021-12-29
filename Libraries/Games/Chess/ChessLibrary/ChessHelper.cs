@@ -21,6 +21,11 @@ public static class ChessHelper
 
     public static List<Move> PossibleMovesForLocation(BoardState state, Location loc)
     {
+        //Return a blank list if the location is invalid
+        if(loc.Row < 0 || loc.Row > 7 || loc.Column < 0 || loc.Column > 7 )
+            return new List<Move>();
+
+
         List<Move> moves = new();
         // Add all moves possible by basic move rules. Moves that put
         // the current players king into check will be removed later.

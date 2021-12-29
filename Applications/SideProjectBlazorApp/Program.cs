@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using NOAAWeather;
+using ChessLibrary;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<NOAAWeatherService>();
+builder.Services.AddSingleton<BasicTwoPersonChessService>();
+
+
 
 var app = builder.Build();
 
