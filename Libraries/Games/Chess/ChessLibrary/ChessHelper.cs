@@ -21,6 +21,11 @@ public static class ChessHelper
 
     public static List<Move> PossibleMovesForLocation(BoardState state, Location loc)
     {
+        //Return a blank list if the location is invalid
+        if(loc.Row < 0 || loc.Row > 7 || loc.Column < 0 || loc.Column > 7 )
+            return new List<Move>();
+
+
         List<Move> moves = new();
         // Add all moves possible by basic move rules. Moves that put
         // the current players king into check will be removed later.
@@ -118,9 +123,45 @@ public static class ChessHelper
 
 
         ////////////////////////////////////////////////////
-        // Update Board (castling moves two pieces)
+        // Update Board
         state.Board[newMove.End.Row, newMove.End.Column] = state.Board[newMove.Start.Row, newMove.Start.Column];
         state.Board[newMove.Start.Row, newMove.Start.Column] = PIECE.NONE;
+
+        //Castle - Move Rook
+        if(pieceAtStartLocation == PIECE.WHITE_KING && startLoc == new Location(0,4) && endLoc == new Location(0,6))
+        {
+            state.Board[0,5] = PIECE.WHITE_ROOK;
+            state.Board[0,7] = PIECE.NONE;
+        }
+        if(pieceAtStartLocation == PIECE.WHITE_KING && startLoc == new Location(0,4) && endLoc == new Location(0,2))
+        {
+            state.Board[0,3] = PIECE.WHITE_ROOK;
+            state.Board[0,0] = PIECE.NONE;
+        }
+        if(pieceAtStartLocation == PIECE.BLACK_KING && startLoc == new Location(7,4) && endLoc == new Location(7,6))
+        {
+            state.Board[7,5] = PIECE.BLACK_ROOK;
+            state.Board[7,7] = PIECE.NONE;
+        }
+        if(pieceAtStartLocation == PIECE.BLACK_KING && startLoc == new Location(7,4) && endLoc == new Location(7,2))
+        {
+            state.Board[7,3] = PIECE.BLACK_ROOK;
+            state.Board[7,0] = PIECE.NONE;
+        }
+
+
+        //En Pasante: remove pawn
+        if(pieceAtStartLocation == PIECE.WHITE_PAWN && endLoc == state.EnPassantSquare && state.EnPassantSquare != null)
+        {
+            Location a = (Location)state.EnPassantSquare; // TODO: this gets around a strange error that Row and Column are not accessable. Need to look into this more.
+            state.Board[a.Row-1, a.Column]= PIECE.NONE;
+        }
+        if(pieceAtStartLocation == PIECE.BLACK_PAWN && endLoc == state.EnPassantSquare && state.EnPassantSquare != null)
+        {
+            Location a = (Location)state.EnPassantSquare; // TODO: this gets around a strange error that Row and Column are not accessable. Need to look into this more.
+            state.Board[a.Row+1, a.Column]= PIECE.NONE;
+        }
+
 
 
 

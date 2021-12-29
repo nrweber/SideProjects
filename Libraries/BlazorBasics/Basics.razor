@@ -1,0 +1,26 @@
+﻿
+
+<EditForm Model="@PickedDirection">
+    <InputRadioGroup @bind-Value="@PickedDirection">
+        <InputRadio Value="DIRECTION.HIGH" />&nbsp;High<br/>
+        <InputRadio Value="DIRECTION.LOW" />&nbsp;Low<br/>
+    </InputRadioGroup>
+</EditForm>
+
+<div> Selected Direction is @PickedDirection </div>
+
+
+@code
+{
+    // To use the EditForm tag, this line had to be added to _Imports.razor
+    //  @using Microsoft.AspNetCore.Components.Forms
+
+    enum DIRECTION
+    {
+        HIGH,
+        LOW
+    };
+
+
+    DIRECTION PickedDirection = DIRECTION.HIGH;
+}
