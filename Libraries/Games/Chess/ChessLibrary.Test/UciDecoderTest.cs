@@ -1,5 +1,7 @@
 using Xunit;
 
+using ChessLibrary.Engines;
+
 namespace ChessLibrary.Test;
 
 public class UciDecoderTest

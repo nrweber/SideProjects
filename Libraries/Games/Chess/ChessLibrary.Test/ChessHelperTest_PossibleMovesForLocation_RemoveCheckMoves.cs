@@ -41,6 +41,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_RemoveCheckMoves
 
     }
 
+    [Theory]
     [InlineData(PLAYER.WHITE, PIECE.WHITE_ROOK)]
     [InlineData(PLAYER.BLACK, PIECE.BLACK_ROOK)]
     [InlineData(PLAYER.WHITE, PIECE.WHITE_QUEEN)]

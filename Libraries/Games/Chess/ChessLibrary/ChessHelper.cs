@@ -1,10 +1,12 @@
 using System.Text;
 
-
 namespace ChessLibrary;
 
 public static class ChessHelper
 {
+    static readonly string[] PossibleCastleStrings = new  string[]{"KQkq", "KQk", "KQq", "KQ", "Kkq", "Kq", "Kk", "K", "Qkq", "Qq", "Qk", "Q", "kq", "k", "q", "-"};
+    static readonly char[] ValidColumnLetters = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+
     public static List<Move> PossibleMoves(BoardState state)
     {
         List<Move> moves = new();
@@ -301,6 +303,141 @@ public static class ChessHelper
         return output.ToString();
     }
 
+
+    public static (bool, BoardState) ToBoardState(String Fen)
+    {
+        var parts = Fen.Split(" ");
+
+        if(parts.Length != 6)
+        {
+            return (false, new BoardState());
+        }
+
+        BoardState state = new();
+        int BoardIndex = 0;
+        int StringIndex = 0;
+        int RowCheck = 0;
+        while(BoardIndex < 64 && StringIndex < parts[0].Length)
+        {
+            if(parts[0][StringIndex] == '/')
+            {
+                if(BoardIndex%8 == 0)
+                {
+                    StringIndex += 1;
+                    RowCheck += 1;
+                    continue;
+                }
+                else
+                {
+                    return (false, new BoardState());
+                }
+
+            }
+
+            if(BoardIndex%8 == 0 && BoardIndex/8 != RowCheck)
+            {
+                return (false, new BoardState());
+            }
+
+
+            PIECE p = FENCharToPiece(parts[0][StringIndex]);
+            if(p != PIECE.NONE)
+            {
+                int row = 7-(BoardIndex/8);
+                int col = BoardIndex%8;
+
+                state.Board[row, col] = p;
+
+                StringIndex += 1;
+                BoardIndex += 1;
+                continue;
+            }
+
+            int empties = 0;
+            if(Int32.TryParse(parts[0][StringIndex].ToString(), out empties))
+            {
+                if(BoardIndex + empties > 64)
+                    return (false, new BoardState());
+
+                for(int i = 0; i < empties; i++)
+                {
+                    int row = 7-(BoardIndex/8);
+                    int col = BoardIndex%8;
+
+                    state.Board[row, col] = PIECE.NONE;
+                    BoardIndex += 1;
+                }
+
+                StringIndex += 1;
+                continue;
+            }
+
+
+            //If we got here the character is invalid
+            return (false, new BoardState());
+        }
+
+        if(StringIndex < parts[0].Length || BoardIndex < 64)
+            return (false, new BoardState());
+
+
+
+        // Current Turn
+        if(parts[1] != "w" && parts[1] != "b" )
+            return (false, new BoardState());
+
+        state.CurrentTurn = (parts[1] == "w") ? PLAYER.WHITE : PLAYER.BLACK;
+
+        // Castle possiblities
+        if(PossibleCastleStrings.Contains(parts[2]) == false)
+            return (false, new BoardState());
+        var castleSplit = parts[2].ToList();
+        state.WhiteCanKingCastle = castleSplit.Contains('K');
+        state.WhiteCanQueenCastle = castleSplit.Contains('Q');
+        state.BlackCanKingCastle = castleSplit.Contains('k');
+        state.BlackCanQueenCastle = castleSplit.Contains('q');
+
+        //EnPassange Square
+        // Dash is ok to leave as default
+        if(parts[3] != "-") 
+        {
+            // Expect two characters
+            // first must be a-z and second must be 3 or 6
+            if( parts[3].Length != 2
+                || (parts[3][1] != '3' && parts[3][1] != '6') 
+                || false == ValidColumnLetters.Contains(parts[3][0]))
+            {
+                return (false, new BoardState());
+            }
+            else 
+            {
+                int col = (parts[3][0]-'a');
+                int row = Int32.Parse(parts[3][1].ToString())-1;
+
+                state.EnPassantSquare = new Location(row, col);
+            }
+        }
+
+        //Half moves since pawn move or capture
+        int halfMoves = 0;
+        // must be positive number
+        bool halfMovesValid = Int32.TryParse(parts[4], out halfMoves);
+        if(halfMovesValid == false || halfMoves < 0)
+            return (false, new BoardState());
+        state.HalfMovesSinceLastCaptureOrPawnMove = halfMoves;
+
+        //Move Number
+        int moveNumber = 0;
+        bool moveNumberValid = Int32.TryParse(parts[5], out moveNumber);
+        //must be postive and greater than zero
+        if(moveNumberValid == false || moveNumber <= 0)
+            return (false, new BoardState());
+        state.MoveNumber = moveNumber;
+
+        return (true, state);
+    }
+
+
     private static string FENBoardString(BoardState state)
     {
         StringBuilder output = new StringBuilder();
@@ -365,6 +502,38 @@ public static class ChessHelper
                 return "P";
         }
         return "";
+    }
+
+    private static PIECE FENCharToPiece(Char c)
+    {
+        switch(c)
+        {
+            case 'r':
+                return PIECE.BLACK_ROOK;
+            case 'n':
+                return PIECE.BLACK_KNIGHT;
+            case 'b':
+                return PIECE.BLACK_BISHOP;
+            case 'q':
+                return PIECE.BLACK_QUEEN;
+            case 'k':
+                return PIECE.BLACK_KING;
+            case 'p':
+                return PIECE.BLACK_PAWN;
+            case 'R':
+                return PIECE.WHITE_ROOK;
+            case 'N':
+                return PIECE.WHITE_KNIGHT;
+            case 'B':
+                return PIECE.WHITE_BISHOP;
+            case 'Q':
+                return PIECE.WHITE_QUEEN;
+            case 'K':
+                return PIECE.WHITE_KING;
+            case 'P':
+                return PIECE.WHITE_PAWN;
+        }
+        return PIECE.NONE;
     }
 
     private static (int row, int col) FindPiece(BoardState state, PIECE pieceToLocate)
