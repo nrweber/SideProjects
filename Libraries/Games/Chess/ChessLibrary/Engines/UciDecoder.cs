@@ -49,7 +49,11 @@ public static class UciDecoder
             }
             if(infoGroup[0] == "pv")
             {
-                info.Move = infoGroup[1];
+                int fromCol = infoGroup[1][0] - 'a';
+                int fromRow = Int32.Parse(infoGroup[1][1].ToString())-1;
+                int toCol = infoGroup[1][2] - 'a';
+                int toRow = Int32.Parse(infoGroup[1][3].ToString())-1;
+                info.Move = new Move(new Location(fromRow, fromCol), new Location(toRow, toCol));
             }
         }
 

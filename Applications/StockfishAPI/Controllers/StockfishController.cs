@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ChessLibrary;
 using ChessLibrary.Engines;
 
 namespace StockfishAPI.Controllers;
@@ -16,25 +17,28 @@ public class StockfishController : ControllerBase
     }
 
     [HttpGet]
-    public MovesResult Get(MoveRequest request)
+    public MovesResult Get(String Fen)
     {
-        //TODO: Turn fen into state to check if Fen is valid
+        (var validState, _) = ChessHelper.ToBoardState(Fen);
 
-        var moves = Stockfish.GetBestMoves(request.Fen, 12, 10);
-        Console.WriteLine($"here - {moves.Length}");
+        if(validState == false)
+        {
+            return new MovesResult()
+            {
+                Successful = false,
+                ErrorMessage = "FEN is not valid",
+                Fen = Fen
+            };
+
+        }
+
+        var moves = Stockfish.GetBestMoves(Fen, 12, 10);
         return new MovesResult()
         {
-            Fen = request.Fen,
+            Fen = Fen,
             Moves = moves
         };
     }
-}
-
-
-
-public class MoveRequest
-{
-    public String Fen {get; set;} = "";
 }
 
 public class MovesResult
