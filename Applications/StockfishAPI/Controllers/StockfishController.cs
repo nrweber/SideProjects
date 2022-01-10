@@ -36,7 +36,7 @@ public class StockfishController : ControllerBase
         return new MovesResult()
         {
             Fen = Fen,
-            Moves = moves
+            Moves = moves.ToList()
         };
     }
 }

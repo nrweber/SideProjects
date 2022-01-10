@@ -1,3 +1,5 @@
+using ChessLibrary.Engines;
+
 namespace ChessConsoleApp;
 
 public static class ChessConsoleHelper
@@ -85,6 +87,22 @@ public static class ChessConsoleHelper
         else
         {
             return (state, "Invalid move");
+        }
+    }
+
+
+    public static BoardState GetComputerMoves(StockfishAPIClient client, BoardState state)
+    {
+        var result = client.GetComputerMoves(ChessHelper.ToFENNotation(state)).Result;
+        if(result.Moves.Count != 0)
+        {
+            var move = result.Moves[0].Move;
+            (_, var newState) = ChessHelper.MakeMove(state, move);
+            return newState;
+        }
+        else
+        {
+            return state;
         }
     }
 }

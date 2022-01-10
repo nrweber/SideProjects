@@ -1,4 +1,10 @@
-﻿var state = new BoardState();
+﻿using ChessLibrary.Engines;
+
+var state = new BoardState();
+HttpClient client = new HttpClient();
+
+
+StockfishAPIClient apiClient = new(client);
 
 Console.Clear();
 ChessConsoleHelper.PrintBoard(state);
@@ -7,6 +13,7 @@ Console.WriteLine(ChessHelper.ToFENNotation(state));
 bool run = true;
 while(run)
 {
+
     Console.Write("command > ");
     var input = Console.ReadLine();
 
@@ -23,6 +30,9 @@ while(run)
         case "m":
             extraOutputText = ChessConsoleHelper.GenerateMoves(state);
             break;
+        case "c":
+            state = ChessConsoleHelper.GetComputerMoves(apiClient, state);
+            break;
         case "":
             break;
         default:
@@ -35,6 +45,7 @@ while(run)
     ChessConsoleHelper.PrintBoard(state);
     if(extraOutputText != "")
         Console.WriteLine(extraOutputText);
+
     Console.WriteLine(ChessHelper.ToFENNotation(state));
 }
 
@@ -43,8 +54,6 @@ Console.WriteLine("Thank you for playing!");
 
 
 
-
-
-
+client.Dispose();
 
 
