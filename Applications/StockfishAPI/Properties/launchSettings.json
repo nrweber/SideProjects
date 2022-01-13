@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:28790",
+      "applicationUrl": "http://atlantic1.nic-weber.com:28790",
       "sslPort": 44344
     }
   },
@@ -14,7 +14,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7210;http://localhost:5092",
+      "applicationUrl": "https://atltantic1.nic-weber.com:7210;http://latltantic1.nic-weber.com:5092",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
