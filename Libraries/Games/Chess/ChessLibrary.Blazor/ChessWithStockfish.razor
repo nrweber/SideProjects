@@ -1,0 +1,202 @@
+﻿@using ChessLibrary.Engines
+@inject StockfishAPIClient client
+
+@if(WasColorSelected == false)
+{
+    <div>
+        <span>What Color are you playing?</span>
+        <button type=button @onclick="() => SetColor(PLAYER.WHITE)">White</button>
+        <button type=button @onclick="() => SetColor(PLAYER.BLACK)">Black</button>
+    </div>
+
+}
+else
+{
+    <table id="BoardTable">
+        @foreach(int r in RowRange())
+        {
+            <tr>
+                @foreach(int c in ColRange())
+                {
+                    var lr = r;
+                    var lc = c;
+
+                    <td class="@CellClasses(r,c)"><div class="cellContent @CellContentClasses(r,c)" @onclick="() => CellClicked(lr,lc)">
+                    @if(Board[r,c] != PIECE.NONE)
+                    {
+                        <img class="PieceImg" src="@PieceImageString(Board[r,c])" />
+                    }
+                    </div></td>
+                }
+            </tr>
+        }
+    </table>
+    <div>@TurnIndictor</div>
+
+    <div style="margin-top: 10px">
+        <button type="button" @onclick="@NewGame">New Game</button>
+    </div>
+}
+
+@code
+{
+
+    BoardState state = new();
+
+    PIECE[,] Board
+    {
+        get
+        {
+            return state.Board;
+        }
+    }
+
+    bool WasColorSelected = false;
+    PLAYER Selected = PLAYER.WHITE;
+
+    Location lastClickedLocation = new Location(-1,-1);
+    List<Location> possibleMoveLocations = new();
+
+    string TurnIndictor
+    {
+        get
+        {
+           return (state.CurrentTurn == PLAYER.WHITE) ? "White's turn" : "Black's turn";
+        }
+    }
+
+    void SetColor(PLAYER p)
+    {
+        Selected = p;
+        WasColorSelected = true;
+    }
+
+    void NewGame()
+    {
+        state = new();
+    }
+
+    int[] RowRange()
+    {
+        if(Selected == PLAYER.WHITE)
+            return new int[]{7,6,5,4,3,2,1,0};
+        else
+            return new int[]{0,1,2,3,4,5,6,7};
+    }
+
+    int[] ColRange()
+    {
+        if(Selected == PLAYER.WHITE)
+            return new int[]{0,1,2,3,4,5,6,7};
+        else
+            return new int[]{7,6,5,4,3,2,1,0};
+
+    }
+
+
+
+    async Task CellClicked(int r, int c)
+    {
+        if(state.CurrentTurn != Selected)
+            return;
+
+        Location newLocation = new Location(r,c);
+
+        (var moveMade, state) = ChessHelper.MakeMove(state, new Move(lastClickedLocation, newLocation));
+
+        if(moveMade)
+        {
+            lastClickedLocation = new Location(-1,-1);
+            ClearPossibleMoveSquares();
+            await GetComputerMove();
+        }
+        else
+        {
+            lastClickedLocation = newLocation;
+            SetPossibleMoveSquares();
+        }
+
+    }
+
+    async Task GetComputerMove()
+    {
+        try
+        {
+            var result = await client.GetComputerMoves(ChessHelper.ToFENNotation(state));
+            if(result.Moves.Count != 0)
+            {
+                Console.WriteLine("moves returned");
+                var move = result.Moves[0].Move;
+                (_, var newState) = ChessHelper.MakeMove(state, move);
+                state = newState;
+            }
+            else
+            {
+                Console.WriteLine("no moves returned");
+            }
+        }
+        catch
+        {
+            Console.WriteLine("something failed");
+        }
+    }
+
+
+    void ClearPossibleMoveSquares()
+    {
+        possibleMoveLocations = new();
+    }
+
+    void SetPossibleMoveSquares()
+    {
+        var moves = ChessHelper.PossibleMovesForLocation(state, lastClickedLocation);
+
+        possibleMoveLocations = new();
+        foreach(var m in moves)
+        {
+            possibleMoveLocations.Add(m.End);
+        }
+    }
+
+    string CellClasses(int r, int c)
+    {
+        string classes = "";
+        classes += ((r+c)%2 == 0) ? "evenCell " : "oddCell ";
+
+        return classes;
+    }
+
+    string CellContentClasses(int r, int c)
+    {
+        Location contentLocation = new(r,c);
+
+        string classes = "";
+
+        if(lastClickedLocation == contentLocation)
+            classes += "cellSelected ";
+        if(possibleMoveLocations.Contains(contentLocation))
+            classes += "cellPossible ";
+
+        return classes;
+    }
+
+    string PieceImageString(PIECE p)
+    {
+        var pieceName = "";
+        if(p == PIECE.WHITE_KING) pieceName = "wk";
+        if(p == PIECE.WHITE_QUEEN) pieceName = "wq";
+        if(p == PIECE.WHITE_BISHOP) pieceName = "wb";
+        if(p == PIECE.WHITE_KNIGHT) pieceName = "wn";
+        if(p == PIECE.WHITE_ROOK) pieceName = "wr";
+        if(p == PIECE.WHITE_PAWN) pieceName = "wp";
+        if(p == PIECE.BLACK_KING) pieceName = "bk";
+        if(p == PIECE.BLACK_QUEEN) pieceName = "bq";
+        if(p == PIECE.BLACK_BISHOP) pieceName = "bb";
+        if(p == PIECE.BLACK_KNIGHT) pieceName = "bn";
+        if(p == PIECE.BLACK_ROOK) pieceName = "br";
+        if(p == PIECE.BLACK_PAWN) pieceName = "bp";
+        return $"_content/ChessLibrary.Blazor/chessPieces/{pieceName}.svg";
+    }
+
+
+}

@@ -1,13 +1,17 @@
 using NOAAWeather;
 using ChessLibrary;
+using ChessLibrary.Engines;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<NOAAWeatherService>();
 builder.Services.AddSingleton<BasicTwoPersonChessService>();
+builder.Services.AddSingleton<StockfishAPIClient>();
+
 
 
 
