@@ -25,9 +25,9 @@
                     var lc = c;
 
                     <td class="@CellClasses(r,c)"><div class="cellContent @CellContentClasses(r,c)" @onclick="() => CellClicked(lr,lc)">
-                    @if(state.Board[r,c] != PIECE.NONE)
+                    @if(state.PieceAt(r,c) != PIECE.NONE)
                     {
-                        <img class="PieceImg" src="@PieceImageString(state.Board[r,c])" />
+                        <img class="PieceImg" src="@PieceImageString(state.PieceAt(r,c))" />
                     }
                     </div></td>
                 }
@@ -56,7 +56,7 @@
 
     bool IsPromoting(BoardState game, Location start, Location end)
     {
-        PIECE pieceAtStartLocation = game.Board[start.Row, start.Column];
+        PIECE pieceAtStartLocation = game.PieceAt(start.Row, start.Column);
 
         if(game.CurrentTurn == PLAYER.WHITE) 
         {

@@ -4,21 +4,25 @@ namespace ChessLibrary.Test;
 
 public class ChessHeplerTest_PossibleMovesForLocation_Bishops
 {
-    private static BoardState CreateStateWithBlankBoard(PLAYER player)
+    private static int BoardArrayLocation(int row, int col)
     {
-        BoardState state = new();
+        return (row*8)+col;
+    }
 
-        for(int r = 0; r <= 7; r++)
+    private static PIECE[] BlankBoard()
+    {
+        return new PIECE[]
         {
-            for(int c = 0; c <= 7; c++)
-            {
-                state.Board[r,c] = PIECE.NONE;
-            }
-        }
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+        };
 
-        state.CurrentTurn = player;
-
-        return state;
     }
 
     [Theory]
@@ -26,8 +30,9 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void CenterOfBoard_4_3__NoBlockers(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[4,3] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(4,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -62,8 +67,9 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void CenterOfBoard_3_5__NoBlockers(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[3,5] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(3,5)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(3,5);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -96,8 +102,9 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void TopOfBoard_7_3_NoBlockers(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[7,3] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(7,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(7,3);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -126,8 +133,9 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void LeftOfBoard_5_0_NoBlockers(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[5,0] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(5,0)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(5,0);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -156,8 +164,9 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void RightOfBoard_4_7_NoBlockers(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[4,7] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(4,7)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,7);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -186,8 +195,9 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void BottomOfBoard_0_5_NoBlockers(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[0,5] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(0,5)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(0,5);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -216,13 +226,14 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void BlockersOfOtherColor_4_3(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[4,3] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(4,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
 
-        state.Board[7,0] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
-        state.Board[6,5] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
-        state.Board[1,6] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
-        state.Board[1,0] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        Board[BoardArrayLocation(7,0)] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        Board[BoardArrayLocation(6,5)] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        Board[BoardArrayLocation(1,6)] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        Board[BoardArrayLocation(1,0)] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -255,13 +266,14 @@ public class ChessHeplerTest_PossibleMovesForLocation_Bishops
     [InlineData(PLAYER.BLACK)]
     public static void CenterOfBoard_BlockersSameColor(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(player);
-        state.Board[4,3] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(4,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
 
-        state.Board[7,0] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
-        state.Board[6,5] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
-        state.Board[1,6] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
-        state.Board[1,0] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+        Board[BoardArrayLocation(7,0)] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+        Board[BoardArrayLocation(6,5)] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+        Board[BoardArrayLocation(1,6)] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+        Board[BoardArrayLocation(1,0)] = (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+        BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);

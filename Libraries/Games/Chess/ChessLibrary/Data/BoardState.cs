@@ -40,69 +40,59 @@ public enum PLAYER
     BLACK
 };
 
-
-public record struct BoardState
+public record BoardState(
+        PIECE[] Board,
+        PLAYER CurrentTurn = PLAYER.WHITE, 
+        bool WhiteCanKingCastle = true, 
+        bool WhiteCanQueenCastle = true, 
+        bool BlackCanKingCastle = true, 
+        bool BlackCanQueenCastle = true, 
+        Location? EnPassanteSquare = null,
+        int HalfMovesSinceLastCaptureOrPawnMove = 0,
+        int MoveNumber = 1
+        )
 {
-    // Chess boards and arrays are layed out different so the rows in the board are backwards. The ROWS not the cells.
-    // This is how a real board would look:
-    //    Board[7]
-    //    Board[6]
-    //    Board[5]
-    //    Board[4]
-    //    Board[3]
-    //    Board[2]
-    //    Board[1]
-    //    Board[0]
-
-    public BoardState()
+    public BoardState() :  this((PIECE[])BoardState.ClassicBoardSetup.Clone())
     {
 
     }
-
-    public BoardState(BoardState otherState)
+    
+    private static readonly PIECE[] ClassicBoardSetup = 
     {
-        for(int r = 0; r <= 7; r++)
-        {
-            for(int c = 0; c <=7; c++)
-            {
-                this.Board[r,c] = otherState.Board[r,c];
-            }
-        }
-        CurrentTurn = otherState.CurrentTurn;
-
-        WhiteCanKingCastle = otherState.WhiteCanKingCastle;
-        WhiteCanQueenCastle = otherState.WhiteCanQueenCastle;
-        BlackCanKingCastle = otherState.BlackCanKingCastle;
-        BlackCanQueenCastle = otherState.BlackCanQueenCastle;
-
-        EnPassantSquare = otherState.EnPassantSquare;
-
-        HalfMovesSinceLastCaptureOrPawnMove = otherState.HalfMovesSinceLastCaptureOrPawnMove;;
-        MoveNumber = otherState.MoveNumber;
-
-    }
-
-    public PIECE[,] Board = new PIECE[,]
-    {
-        {PIECE.WHITE_ROOK, PIECE.WHITE_KNIGHT, PIECE.WHITE_BISHOP, PIECE.WHITE_QUEEN, PIECE.WHITE_KING, PIECE.WHITE_BISHOP, PIECE.WHITE_KNIGHT, PIECE.WHITE_ROOK},
-        {PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN},
-        {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-        {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-        {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-        {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-        {PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN},
-        {PIECE.BLACK_ROOK, PIECE.BLACK_KNIGHT, PIECE.BLACK_BISHOP, PIECE.BLACK_QUEEN, PIECE.BLACK_KING, PIECE.BLACK_BISHOP, PIECE.BLACK_KNIGHT, PIECE.BLACK_ROOK}
+        PIECE.WHITE_ROOK, PIECE.WHITE_KNIGHT, PIECE.WHITE_BISHOP, PIECE.WHITE_QUEEN, PIECE.WHITE_KING, PIECE.WHITE_BISHOP, PIECE.WHITE_KNIGHT, PIECE.WHITE_ROOK,
+            PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN,
+            PIECE.BLACK_ROOK, PIECE.BLACK_KNIGHT, PIECE.BLACK_BISHOP, PIECE.BLACK_QUEEN, PIECE.BLACK_KING, PIECE.BLACK_BISHOP, PIECE.BLACK_KNIGHT, PIECE.BLACK_ROOK
     };
 
-    public PLAYER CurrentTurn = PLAYER.WHITE;
+    PIECE[] _board = Board;
 
-    public bool WhiteCanKingCastle = true;
-    public bool WhiteCanQueenCastle = true;
-    public bool BlackCanKingCastle = true;
-    public bool BlackCanQueenCastle = true;
+    public PIECE[] Board
+    {
+        get
+        {
+            //If you know a better way of making an array immutable here
+            // please let me know!!
+            return (PIECE[])_board.Clone();
+        }
 
-    public Location? EnPassantSquare = null;
+        init
+        {
+            _board = value;
+        }
+    }
 
-    public int HalfMovesSinceLastCaptureOrPawnMove = 0;
-    public int MoveNumber = 1;
+
+    public PIECE PieceAt(int row, int col)
+    {
+        if(row < 0 || row > 7 || col < 0 || col > 7)
+            throw new ArgumentException($"Index out of bounds ({row},{col})");
+
+        int location = (row*8)+col;
+        return Board[location];
+    }
 }

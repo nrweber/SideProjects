@@ -24,8 +24,7 @@ public class ChessHeplerTest_PossibleMovesForLocation
     [InlineData(3,3)]
     public static void NoMovesforEmptySquare_BlackTurn(int row, int col)
     {
-        BoardState state = new();
-        state.CurrentTurn = PLAYER.BLACK;
+        BoardState state = new(){ CurrentTurn = PLAYER.BLACK};
         Location loc = new(row,col);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
 
@@ -42,8 +41,7 @@ public class ChessHeplerTest_PossibleMovesForLocation
     [InlineData(-1,-1)]
     public static void EmptyListReturnedForInvalidLocations(int row, int col)
     {
-        BoardState state = new();
-        state.CurrentTurn = PLAYER.BLACK;
+        BoardState state = new(){ CurrentTurn = PLAYER.BLACK};
         Location loc = new(row,col);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
 

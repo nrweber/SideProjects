@@ -22,9 +22,9 @@ else
                     var lc = c;
 
                     <td class="@CellClasses(r,c)"><div class="cellContent @CellContentClasses(r,c)" @onclick="() => CellClicked(lr,lc)">
-                    @if(Board[r,c] != PIECE.NONE)
+                    @if(state.PieceAt(r,c) != PIECE.NONE)
                     {
-                        <img class="PieceImg" src="@PieceImageString(Board[r,c])" />
+                        <img class="PieceImg" src="@PieceImageString(state.PieceAt(r,c))" />
                     }
                     </div></td>
                 }
@@ -42,14 +42,6 @@ else
 {
 
     BoardState state = new();
-
-    PIECE[,] Board
-    {
-        get
-        {
-            return state.Board;
-        }
-    }
 
     bool WasColorSelected = false;
     PLAYER Selected = PLAYER.WHITE;

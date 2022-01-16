@@ -4,34 +4,39 @@ namespace ChessLibrary.Test;
 
 public class ChessHeplerTest_PossibleMovesForLocation_RemoveCheckMoves
 {
-    private static BoardState CreateStateWithBlankBoard(PLAYER player)
+    private static int BoardArrayLocation(int row, int col)
     {
-        BoardState state = new();
+        return (row*8)+col;
+    }
 
-        for(int r = 0; r <= 7; r++)
+    private static PIECE[] BlankBoard()
+    {
+        return new PIECE[]
         {
-            for(int c = 0; c <= 7; c++)
-            {
-                state.Board[r,c] = PIECE.NONE;
-            }
-        }
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+        };
 
-        state.CurrentTurn = player;
-
-        return state;
     }
 
     [Theory]
     [InlineData(PLAYER.WHITE)]
     [InlineData(PLAYER.BLACK)]
-    public void BishopRookQueenTest(PLAYER playerColor)
+    public void BishopRookQueenTest(PLAYER player)
     {
-        BoardState state = CreateStateWithBlankBoard(playerColor);
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(0,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_KING : PIECE.BLACK_KING;
+        Board[BoardArrayLocation(1,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
 
-        state.Board[0,3] = (playerColor == PLAYER.WHITE) ? PIECE.WHITE_KING : PIECE.BLACK_KING;
-        state.Board[1,3] = (playerColor == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        Board[BoardArrayLocation(5,3)] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        BoardState state = new(Board, CurrentTurn: player);
 
-        state.Board[5,3] = (playerColor == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
 
         Location loc = new(1,3);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);
@@ -46,14 +51,15 @@ public class ChessHeplerTest_PossibleMovesForLocation_RemoveCheckMoves
     [InlineData(PLAYER.BLACK, PIECE.BLACK_ROOK)]
     [InlineData(PLAYER.WHITE, PIECE.WHITE_QUEEN)]
     [InlineData(PLAYER.BLACK, PIECE.BLACK_QUEEN)]
-    public void RookQueenTest(PLAYER playerColor, PIECE movingPiece)
+    public void RookQueenTest(PLAYER player, PIECE movingPiece)
     {
-        BoardState state = CreateStateWithBlankBoard(playerColor);
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(0,3)] = (player == PLAYER.WHITE) ? PIECE.WHITE_KING : PIECE.BLACK_KING;
+        Board[BoardArrayLocation(1,3)] = movingPiece;
 
-        state.Board[0,3] = (playerColor == PLAYER.WHITE) ? PIECE.WHITE_KING : PIECE.BLACK_KING;
-        state.Board[1,3] = movingPiece;
+        Board[BoardArrayLocation(5,3)] = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
+        BoardState state = new(Board, CurrentTurn: player);
 
-        state.Board[5,3] = (playerColor == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
 
         Location loc = new(1,3);
         var moves = ChessHelper.PossibleMovesForLocation(state, loc);

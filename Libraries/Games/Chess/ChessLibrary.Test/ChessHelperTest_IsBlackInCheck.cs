@@ -4,21 +4,42 @@ namespace ChessLibrary.Test;
 
 public class ChessHeplerTest_IsBlackInCheck
 {
+    private static int BoardArrayLocation(int row, int col)
+    {
+        return (row*8)+col;
+    }
+
+    private static PIECE[] BlankBoard()
+    {
+        return new PIECE[]
+        {
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+        };
+
+    }
+
     [Fact]
     public void BlackIsInCheck_NoCheck()
     {
         BoardState state = new()
         {
-            Board = new PIECE[,]
+            Board = new PIECE[]
             {
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE},
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE},
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.WHITE_KING, PIECE.NONE},
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.BLACK_KING, PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE},
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.WHITE_PAWN, PIECE.NONE, PIECE.WHITE_QUEEN,  PIECE.NONE,       PIECE.NONE},
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.WHITE_KNIGHT, PIECE.NONE,       PIECE.NONE},
-                {PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE},
-                {PIECE.WHITE_BISHOP, PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE},
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE,
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE,
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.WHITE_KING, PIECE.NONE,
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.BLACK_KING, PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE,
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.WHITE_PAWN, PIECE.NONE, PIECE.WHITE_QUEEN,  PIECE.NONE,       PIECE.NONE,
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.WHITE_KNIGHT, PIECE.NONE,       PIECE.NONE,
+                PIECE.NONE,         PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE,
+                PIECE.WHITE_BISHOP, PIECE.NONE, PIECE.NONE, PIECE.NONE,       PIECE.NONE, PIECE.NONE,         PIECE.NONE,       PIECE.NONE,
             }
         };
 
@@ -40,22 +61,10 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(6,0,5,1)]
     public void BlackIsInCheck_ByPawnAttack(int kingRow, int kingCol, int pawnRow, int pawnCol)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[pawnRow,pawnCol] = PIECE.WHITE_PAWN;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(pawnRow,pawnCol)] = PIECE.WHITE_PAWN;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -107,28 +116,15 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(7,2,0,2, PIECE.WHITE_QUEEN)]
     public void BlackIsInCheck_ByColumnOrRowAttack(int kingRow, int kingCol, int pieceRow, int pieceCol, PIECE attackingPiece)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[pieceRow, pieceCol] = attackingPiece;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(pieceRow, pieceCol)] = attackingPiece;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
         Assert.True(result);
     }
-
 
     [Theory]
     //From the left, other pieces is in the way
@@ -167,23 +163,11 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(7,2, 1,2, 0,2, PIECE.WHITE_QUEEN)]
     public void BlackIsInCheck_NotByColumnOrRowAttackBecausePieceBlockingAttack(int kingRow, int kingCol, int blockingRow, int blockingCol, int pieceRow, int pieceCol, PIECE attackingPiece)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[pieceRow, pieceCol] = attackingPiece;
-        state.Board[blockingRow, blockingCol] = PIECE.WHITE_PAWN;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(pieceRow, pieceCol)] = attackingPiece;
+        Board[BoardArrayLocation(blockingRow, blockingCol)] = PIECE.WHITE_PAWN;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -217,22 +201,10 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(1,2,  2,0)]
     public void BlackIsInCheck_ByKnight(int kingRow, int kingCol, int knightRow, int knightCol)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[knightRow, knightCol] = PIECE.WHITE_KNIGHT;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(knightRow, knightCol)] = PIECE.WHITE_KNIGHT;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -266,22 +238,10 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(1,2,  2,0, PIECE.NONE)]
     public void BlackIsInCheck_FalseIfNotAKnightAKnightsMoveAway(int kingRow, int kingCol, int otherRow, int otherCol, PIECE otherPiece)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[otherRow, otherCol] = otherPiece;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(otherRow, otherCol)] = otherPiece;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -326,22 +286,10 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(7,7,0,0, PIECE.WHITE_QUEEN)]
     public void BlackIsInCheck_ByDiagonalAttack(int kingRow, int kingCol, int pieceRow, int pieceCol, PIECE attackingPiece)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[pieceRow, pieceCol] = attackingPiece;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(pieceRow, pieceCol)] = attackingPiece;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -378,23 +326,11 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(7,7, 2,2, 0,0, PIECE.WHITE_QUEEN)]
     public void BlackIsInCheck_NotByDiagonalAttackBecausePieceBlockingAttack(int kingRow, int kingCol, int blockingRow, int blockingCol, int pieceRow, int pieceCol, PIECE attackingPiece)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[pieceRow, pieceCol] = attackingPiece;
-        state.Board[blockingRow, blockingCol] = PIECE.WHITE_ROOK;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(pieceRow, pieceCol)] = attackingPiece;
+        Board[BoardArrayLocation(blockingRow, blockingCol)] = PIECE.WHITE_ROOK;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -417,22 +353,10 @@ public class ChessHeplerTest_IsBlackInCheck
     [InlineData(6,7,  7,7)]
     public void BlackIsInCheck_ByOtherKing(int kingRow, int kingCol, int attackingRow, int attackingCol)
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
-        state.Board[kingRow,kingCol] = PIECE.BLACK_KING;
-        state.Board[attackingRow, attackingCol] = PIECE.WHITE_KING;
+        var Board = BlankBoard();
+        Board[BoardArrayLocation(kingRow,kingCol)] = PIECE.BLACK_KING;
+        Board[BoardArrayLocation(attackingRow, attackingCol)] = PIECE.WHITE_KING;
+        BoardState state = new(Board);
 
         bool result = ChessHelper.BlackIsInCheck(state);
 
@@ -442,20 +366,7 @@ public class ChessHeplerTest_IsBlackInCheck
     [Fact]
     public void BlackIsInCheck_FalseIfNoKing()
     {
-        BoardState state = new()
-        {
-            Board = new PIECE[,]
-            {
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-                {PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE},
-            }
-        };
+        BoardState state = new(BlankBoard());
 
         bool result = ChessHelper.BlackIsInCheck(state);
 

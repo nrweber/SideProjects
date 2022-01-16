@@ -30,7 +30,7 @@ public static class ChessConsoleHelper
                 Console.Write($"{r+1}  ");
                 for(int c = 0; c <= 7; c++)
                 {
-                    var displayData = PieceDisplayInfo[state.Board[r,c]];
+                    var displayData = PieceDisplayInfo[state.PieceAt(r,c)];
                     Console.Write("| ");
                     Console.ForegroundColor = displayData.color;
                     Console.Write($"{displayData.letter} ");
@@ -49,7 +49,7 @@ public static class ChessConsoleHelper
                 Console.Write($"{r+1}  ");
                 for(int c = 7; c >= 0; c--)
                 {
-                    var displayData = PieceDisplayInfo[state.Board[r,c]];
+                    var displayData = PieceDisplayInfo[state.PieceAt(r,c)];
                     Console.Write("| ");
                     Console.ForegroundColor = displayData.color;
                     Console.Write($"{displayData.letter} ");

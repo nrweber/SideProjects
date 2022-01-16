@@ -4,7 +4,6 @@ namespace ChessLibrary.Test;
 
 public class ChessHeplerTest_PosibleMoves
 {
-
     // Did not go all out on these test. The "ForLocation" test cover all the moves well.
     // May come back and add a few more later.
 
@@ -45,10 +44,11 @@ public class ChessHeplerTest_PosibleMoves
     [Fact]
     public void Aftere2e4_BlacksTurn()
     {
-        BoardState state = new();
-        state.Board[3, 4] = state.Board[1, 4];
-        state.Board[1, 4] = PIECE.NONE;
-        state.CurrentTurn = PLAYER.BLACK;
+        //Get Classic Board
+        var Board = new BoardState().Board;
+        Board[(3*8)+4] = Board[(1*8)+4];
+        Board[(1*8)+4] = PIECE.NONE;
+        BoardState state = new(Board, CurrentTurn: PLAYER.BLACK);
 
         var moves = ChessHelper.PossibleMoves(state);
 
@@ -78,6 +78,5 @@ public class ChessHeplerTest_PosibleMoves
                 item => Assert.True(item.Equals(new Move(new Location(7,6), new Location(5,5))))
                 );
     }
-
 
 }
