@@ -107,6 +107,7 @@ public static class ChessHelper
         ////////////////////////////////////////////////////
         // Copy the state
         BoardState state = new(originalState);
+        PLAYER playerMakingMove = state.CurrentTurn;
 
         ////////////////////////////////////////////////////
         // Check if it is a valid move
@@ -123,11 +124,16 @@ public static class ChessHelper
         Location endLoc = newMove.End;
         PIECE pieceAtEndLocation = state.Board[endLoc.Row, endLoc.Column];
 
-
         ////////////////////////////////////////////////////
         // Update Board
         state.Board[newMove.End.Row, newMove.End.Column] = state.Board[newMove.Start.Row, newMove.Start.Column];
         state.Board[newMove.Start.Row, newMove.Start.Column] = PIECE.NONE;
+
+        //Promotion
+        if(newMove.promotion != PROMOTION_PIECE.NONE)
+        {
+            state.Board[newMove.End.Row, newMove.End.Column] = PromotionToPiece(newMove.promotion, playerMakingMove);
+        }
 
         //Castle - Move Rook
         if(pieceAtStartLocation == PIECE.WHITE_KING && startLoc == new Location(0,4) && endLoc == new Location(0,6))
@@ -502,6 +508,22 @@ public static class ChessHelper
                 return "P";
         }
         return "";
+    }
+
+    private static PIECE PromotionToPiece(PROMOTION_PIECE promotionPiece, PLAYER player)
+    {
+        switch(promotionPiece)
+        {
+            case PROMOTION_PIECE.QUEEN:
+                return (player == PLAYER.WHITE) ? PIECE.WHITE_QUEEN : PIECE.BLACK_QUEEN;
+            case PROMOTION_PIECE.KNIGHT:
+                return (player == PLAYER.WHITE) ? PIECE.WHITE_KNIGHT : PIECE.BLACK_KNIGHT;
+            case PROMOTION_PIECE.ROOK:
+                return (player == PLAYER.WHITE) ? PIECE.WHITE_ROOK : PIECE.BLACK_ROOK;
+            case PROMOTION_PIECE.BISHOP:
+                return (player == PLAYER.WHITE) ? PIECE.WHITE_BISHOP : PIECE.BLACK_BISHOP;
+        }
+        return PIECE.NONE;
     }
 
     private static PIECE FENCharToPiece(Char c)

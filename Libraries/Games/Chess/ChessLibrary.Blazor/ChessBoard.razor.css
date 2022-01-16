@@ -1,6 +1,20 @@
-﻿#BoardTable {
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+#OuterBoardDiv {
+    position: relative;
     width: 100%;
     max-width: 500px;
+
+    background-color: purple;
+}
+
+#BoardTable {
+    width: 100%;
     padding: 1em;
     margin: 1em 0;
 }
@@ -50,4 +64,50 @@
     border: 2px dotted red;
 }
 
+#WhitePromotionDiv
+{
+    display: none;
+}
 
+#BlackPromotionDiv
+{
+    display: none;
+}
+
+#WhitePromotionDiv.selecting
+{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+    top: 10px;
+}
+
+#BlackPromotionDiv.selecting
+{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+    bottom: 10px;
+}
+
+#PromotionInnerDiv
+{
+    display: flex;
+    justify-content: center;
+    background-color: #404040;
+    width: 60%;
+}
+
+#PromotionInnerDiv img
+{
+    width: 25%;
+}
+
+#PromotionInnerDiv img:hover
+{
+    border: 2px red solid;
+}

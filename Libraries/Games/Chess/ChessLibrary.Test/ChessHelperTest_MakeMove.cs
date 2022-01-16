@@ -480,5 +480,39 @@ public class ChessHeplerTest_MakeMove
 
     }
 
+    [Theory]
+    [InlineData(1, PROMOTION_PIECE.QUEEN, PIECE.WHITE_QUEEN)]
+    [InlineData(3, PROMOTION_PIECE.ROOK, PIECE.WHITE_ROOK)]
+    [InlineData(5, PROMOTION_PIECE.KNIGHT, PIECE.WHITE_KNIGHT)]
+    [InlineData(7, PROMOTION_PIECE.BISHOP, PIECE.WHITE_BISHOP)]
+    public void WhitePromotion_PawnRemovedAndNewPiecePlaces(int col, PROMOTION_PIECE promotoTo, PIECE endPiece)
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.WHITE);
 
+        state.Board[6,col] = PIECE.WHITE_PAWN;
+
+        Move m = new Move(new Location(6,col), new Location(7,col), promotoTo);
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.Equal(PIECE.NONE, state.Board[6,col]);
+        Assert.Equal(endPiece, state.Board[7,col]);
+        Assert.True(moveMade);
+    }
+
+    [Theory]
+    [InlineData(1, PROMOTION_PIECE.QUEEN, PIECE.BLACK_QUEEN)]
+    [InlineData(3, PROMOTION_PIECE.ROOK, PIECE.BLACK_ROOK)]
+    [InlineData(5, PROMOTION_PIECE.KNIGHT, PIECE.BLACK_KNIGHT)]
+    [InlineData(7, PROMOTION_PIECE.BISHOP, PIECE.BLACK_BISHOP)]
+    public void BlackPromotion_PawnRemovedAndNewPiecePlaces(int col, PROMOTION_PIECE promotoTo, PIECE endPiece)
+    {
+        BoardState state = CreateStateWithBlankBoard(PLAYER.BLACK);
+
+        state.Board[1,col] = PIECE.BLACK_PAWN;
+
+        Move m = new Move(new Location(1,col), new Location(0,col), promotoTo);
+        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        Assert.Equal(PIECE.NONE, state.Board[1,col]);
+        Assert.Equal(endPiece, state.Board[0,col]);
+        Assert.True(moveMade);
+    }
 }

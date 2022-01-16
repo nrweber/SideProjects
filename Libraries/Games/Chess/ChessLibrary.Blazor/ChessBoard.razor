@@ -1,41 +1,137 @@
-﻿<table id="BoardTable">
-    @for(int r = 7; r >= 0; r--)
-    {
-        <tr>
-            @for(int c = 0; c <= 7; c++)
-            {
-                var lr = r;
-                var lc = c;
-
-                <td class="@CellClasses(r,c)"><div class="cellContent @CellContentClasses(r,c)" @onclick="() => CellClicked(lr,lc)">
-                @if(state.Board[r,c] != PIECE.NONE)
+﻿<div id="OuterBoardDiv">
+    <div id="WhitePromotionDiv" class="@((WhitePromotionPicking) ? "selecting" : "")">
+        <div id="PromotionInnerDiv">
+            <img src="@PieceImageString(PIECE.WHITE_QUEEN)" @onclick="() => PromotionSelected(PROMOTION_PIECE.QUEEN)" />
+            <img src="@PieceImageString(PIECE.WHITE_ROOK)" @onclick="() => PromotionSelected(PROMOTION_PIECE.ROOK)" />
+            <img src="@PieceImageString(PIECE.WHITE_BISHOP)" @onclick="() => PromotionSelected(PROMOTION_PIECE.BISHOP)" />
+            <img src="@PieceImageString(PIECE.WHITE_KNIGHT)" @onclick="() => PromotionSelected(PROMOTION_PIECE.KNIGHT)" />
+        </div>
+    </div>
+    <div id="BlackPromotionDiv" class="@((BlackPromotionPicking) ? "selecting" : "")">
+        <div id="PromotionInnerDiv">
+            <img src="@PieceImageString(PIECE.BLACK_QUEEN)" @onclick="() => PromotionSelected(PROMOTION_PIECE.QUEEN)" />
+            <img src="@PieceImageString(PIECE.BLACK_ROOK)" @onclick="() => PromotionSelected(PROMOTION_PIECE.ROOK)" />
+            <img src="@PieceImageString(PIECE.BLACK_BISHOP)" @onclick="() => PromotionSelected(PROMOTION_PIECE.BISHOP)" />
+            <img src="@PieceImageString(PIECE.BLACK_KNIGHT)" @onclick="() => PromotionSelected(PROMOTION_PIECE.KNIGHT)" />
+        </div>
+    </div>
+    <table id="BoardTable">
+        @for(int r = 7; r >= 0; r--)
+        {
+            <tr>
+                @for(int c = 0; c <= 7; c++)
                 {
-                    <img class="PieceImg" src="@PieceImageString(state.Board[r,c])" />
+                    var lr = r;
+                    var lc = c;
+
+                    <td class="@CellClasses(r,c)"><div class="cellContent @CellContentClasses(r,c)" @onclick="() => CellClicked(lr,lc)">
+                    @if(state.Board[r,c] != PIECE.NONE)
+                    {
+                        <img class="PieceImg" src="@PieceImageString(state.Board[r,c])" />
+                    }
+                    </div></td>
                 }
-                </div></td>
-            }
-        </tr>
-    }
-</table>
+            </tr>
+        }
+    </table>
+</div>
 <div>@TurnIndictor</div>
 
 @code
 {
     BoardState state = new();
 
-    Location lastClickedLocation = new Location(-1,-1);
+    Location? lastClickedLocation = null;
+    Location? promotionEndLocation = null;
     List<Location> possibleMoveLocations = new();
 
+
+    bool WhitePromotionPicking = false;
+    bool BlackPromotionPicking = false;
+
+
+
     string TurnIndictor = "White's turn";
+
+
+    bool IsPromoting(BoardState game, Location start, Location end)
+    {
+        PIECE pieceAtStartLocation = game.Board[start.Row, start.Column];
+
+        if(game.CurrentTurn == PLAYER.WHITE) 
+        {
+            if( pieceAtStartLocation != PIECE.WHITE_PAWN 
+                || start.Row != 6
+                || end.Row != 7
+            )
+            {
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            if( pieceAtStartLocation != PIECE.BLACK_PAWN 
+                || start.Row != 1
+                || end.Row != 0
+            )
+            {
+                return false;
+            }
+            return true;
+        }
+
+    }
+
 
     void CellClicked(int r, int c)
     {
         Location newLocation = new Location(r,c);
+        
+        if(lastClickedLocation == null || WhitePromotionPicking || BlackPromotionPicking)
+        {
+            lastClickedLocation = newLocation;
+            WhitePromotionPicking = false;
+            BlackPromotionPicking = false;
+            promotionEndLocation = null;
+        }
+        else if(IsPromoting(state, (Location)lastClickedLocation, newLocation))
+        {
+            if(state.CurrentTurn == PLAYER.WHITE)
+            {
+                WhitePromotionPicking = true;
+            }
+            else
+            {
+                BlackPromotionPicking = true;
+            }
+            promotionEndLocation = newLocation;
+        }
+        else
+        {
+            (bool moved, state) = ChessHelper.MakeMove(state, new Move((Location)lastClickedLocation, newLocation));
 
-        (_, state) = ChessHelper.MakeMove(state, new Move(lastClickedLocation, newLocation));
+            if(moved)
+                lastClickedLocation = null;
+            else
+                lastClickedLocation = newLocation;
+        }
 
-        lastClickedLocation = newLocation;
+        Update();
+    }
 
+
+    void PromotionSelected(PROMOTION_PIECE selectedPiece)
+    {
+        // If one of these are null somehow, don't try to make the move
+        if(lastClickedLocation != null && promotionEndLocation != null)
+            (_, state) = ChessHelper.MakeMove(state, new Move((Location)lastClickedLocation, (Location)promotionEndLocation, selectedPiece));
+
+
+        WhitePromotionPicking = false;
+        BlackPromotionPicking = false;
+        promotionEndLocation = null;
+        lastClickedLocation = null;
         Update();
     }
 
@@ -52,9 +148,13 @@
 
     void SetPossibleMoveSquares()
     {
-        var moves = ChessHelper.PossibleMovesForLocation(state, lastClickedLocation);
-
         possibleMoveLocations = new();
+
+        if(lastClickedLocation == null)
+            return;
+
+        var moves = ChessHelper.PossibleMovesForLocation(state, (Location)lastClickedLocation);
+
         foreach(var m in moves)
         {
             possibleMoveLocations.Add(m.End);
