@@ -117,18 +117,14 @@ else
             var result = await client.GetComputerMoves(ChessHelper.ToFENNotation(state));
             if(result.Moves.Count != 0)
             {
-                Console.WriteLine("moves returned");
                 var move = result.Moves[0].Move;
                 (_, var newState) = ChessHelper.MakeMove(state, move);
                 state = newState;
             }
-            else
-            {
-                Console.WriteLine("no moves returned");
-            }
         }
         catch
         {
+            //TODO: Handle failure
             Console.WriteLine("something failed");
         }
     }

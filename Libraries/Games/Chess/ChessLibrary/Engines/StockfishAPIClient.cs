@@ -16,7 +16,6 @@ public class StockfishAPIClient
     public async Task<MovesResult> GetComputerMoves(String fen)
     {
         var url = $"http://atlantic1.nic-weber.com:5092/api/stockfish?fen={fen}";
-        Console.WriteLine(url);
         //var result = await _client.GetFromJsonAsync<MovesResult>(url);
         //var result = await _client.GetStringAsync(url);
 
