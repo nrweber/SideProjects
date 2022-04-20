@@ -24,6 +24,12 @@
 
 </table>
 
+@if(Puzzle.Solved)
+{
+    <div>
+        You won!!
+    </div>
+}
 <button @onclick="NewPuzzle">NewPuzzle</button>
 
 

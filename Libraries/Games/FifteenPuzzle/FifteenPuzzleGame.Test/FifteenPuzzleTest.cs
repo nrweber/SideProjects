@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace FifteenPuzzleGame.Test
@@ -115,26 +114,26 @@ namespace FifteenPuzzleGame.Test
         [InlineData(5, null)]
         [InlineData(6, null)]
         [InlineData(7, null)]
-        [InlineData(8, null)]
+        [InlineData(8, new int[] {1,2,3,4,
+                                   5,6,7,8,
+                                   0,10,11,12,
+                                   9,13,14,15})]
         [InlineData(9, null)]
         [InlineData(10, null)]
-        [InlineData(11, new int[] {1,2,3,4,
-                                   5,6,7,8,
-                                   9,10,11,0,
-                                   13,14,15,12})]
+        [InlineData(11, null)]
         [InlineData(12, null)]
-        [InlineData(13, null)]
-        [InlineData(14, new int[] {1,2,3,4,
+        [InlineData(13, new int[] {1,2,3,4,
                                    5,6,7,8,
                                    9,10,11,12,
-                                   13,14,0,15})]
+                                   13,0,14,15})]
+        [InlineData(14, null)]
         [InlineData(15, null)]
-        public void ZeroInLowerRight(int moveLoc, int[] expectedOutput)
+        public void ZeroInLowerLeft(int moveLoc, int[] expectedOutput)
         {
             int[] toPassIn = new int[] {1,2,3,4,
                                         5,6,7,8,
                                         9,10,11,12,
-                                        13,14,15,0};
+                                        0,13,14,15};
 
             FifteenPuzzleService p = new(toPassIn);
             p.Move(moveLoc);
@@ -166,20 +165,20 @@ namespace FifteenPuzzleGame.Test
         [InlineData(8, null)]
         [InlineData(9, null)]
         [InlineData(10, null)]
-        [InlineData(11, new int[] {1,2,3,4,
+        [InlineData(11, new int[] {2,1,3,4,
                                    5,6,7,8,
                                    9,10,11,0,
                                    13,14,15,12})]
         [InlineData(12, null)]
         [InlineData(13, null)]
-        [InlineData(14, new int[] {1,2,3,4,
+        [InlineData(14, new int[] {2,1,3,4,
                                    5,6,7,8,
                                    9,10,11,12,
                                    13,14,0,15})]
         [InlineData(15, null)]
-        public void ZeroInLowerLeft(int moveLoc, int[] expectedOutput)
+        public void ZeroInLowerRight(int moveLoc, int[] expectedOutput)
         {
-            int[] toPassIn = new int[] {1,2,3,4,
+            int[] toPassIn = new int[] {2,1,3,4,
                                         5,6,7,8,
                                         9,10,11,12,
                                         13,14,15,0};
@@ -330,5 +329,46 @@ namespace FifteenPuzzleGame.Test
         }
 
 
+        [Fact]
+        public void SolvedTrueWhenMatchesSolution()
+        {
+            int[] toPassIn = new int[] {1,2,3,4,
+                                        5,6,7,8,
+                                        9,10,11,12,
+                                        13,14,15,0};
+            FifteenPuzzleService p = new(toPassIn);
+
+            Assert.True(p.Solved);
+        }
+
+        [Theory]
+        [InlineData(new int[] {1,2,3,0,4,5,6,7,8,9,10,11,12,13,14,15})]
+        [InlineData(new int[] {1,2,3,4,5,6,0,7,8,9,10,11,12,13,14,15})]
+        [InlineData(new int[] {1,2,3,4,5,6,7,8,9,0,10,11,12,13,14,15})]
+        [InlineData(new int[] {1,2,3,4,5,6,7,8,9,10,11,12,0,13,14,15})]
+        [InlineData(new int[] {1,3,2,4,5,6,7,8,9,10,11,12,13,14,15,0})]
+        public void SolvedFalseWhenCurrentStateDoesntMatchSolution(int[] currentState)
+        {
+            FifteenPuzzleService p = new(currentState);
+            Assert.False(p.Solved);
+        }
+
+
+        [Theory]
+        [InlineData(11)]
+        [InlineData(14)]
+        public void IfSolvedMoveDoesNothing(int moveLoc)
+        {
+            int[] toPassIn = new int[] {1,2,3,4,
+                                        5,6,7,8,
+                                        9,10,11,12,
+                                        13,14,15,0};
+            FifteenPuzzleService p = new(toPassIn);
+
+            p.Move(moveLoc);
+
+            Assert.Equal(toPassIn, p.CurrentBoard);
+
+        }
     }
 }

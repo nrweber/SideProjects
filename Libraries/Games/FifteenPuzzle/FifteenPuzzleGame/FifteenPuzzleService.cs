@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace FifteenPuzzleGame
+﻿namespace FifteenPuzzleGame
 {
     public class FifteenPuzzleService
     {
@@ -11,6 +8,24 @@ namespace FifteenPuzzleGame
         private int _zeroPosition = 15;
 
         public int[] CurrentBoard { get { return _currentBoard.ToArray(); } }
+
+        private bool _doingSetup = false;
+
+        public bool Solved
+        {
+            get
+            {
+                if(_doingSetup)
+                    return false;
+
+                for(int i = 0; i < _solution.Length; i++)
+                    if(_solution[i] != _currentBoard[i])
+                        return false;
+                return true;
+            }
+        }
+
+
 
         public FifteenPuzzleService()
         {
@@ -31,6 +46,7 @@ namespace FifteenPuzzleGame
 
         private void SetupRandomBoard()
         {
+            _doingSetup = true;
             Random rnd =new Random();
 
             //You cannot just shuffle the array. If you do the puzzle may
@@ -49,10 +65,16 @@ namespace FifteenPuzzleGame
             while(_zeroPosition != 15)
                 Move(_zeroPosition+4);
 
+            _doingSetup = false;
         }
 
         public void Move(int position)
         {
+            //Don't allow any more moves if solved
+            if(Solved)
+                return;
+
+
             if(
                     ( (_zeroPosition % 4 != 3) && (position == _zeroPosition+1)) ||   // Move Right
                     ( (_zeroPosition > 3 ) && (position == _zeroPosition-4)) ||  // Move Up
