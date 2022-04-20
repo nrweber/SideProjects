@@ -1,6 +1,6 @@
 using NOAAWeather;
-using ChessLibrary;
-using ChessLibrary.Engines;
+using ChessLibrary.Services;
+using ChessLibrary.Services.Engines;
 
 var builder = WebApplication.CreateBuilder(args);
 

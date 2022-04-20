@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SideProjectWASMApp;
 using NOAAWeather;
 
-using ChessLibrary.Engines;
+using ChessLibrary.Services.Engines;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

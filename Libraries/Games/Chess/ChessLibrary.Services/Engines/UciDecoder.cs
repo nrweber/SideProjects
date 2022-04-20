@@ -1,4 +1,4 @@
-namespace ChessLibrary.Engines;
+namespace ChessLibrary.Services.Engines;
 
 public static class UciDecoder
 {

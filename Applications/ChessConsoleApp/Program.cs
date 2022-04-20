@@ -1,4 +1,4 @@
-﻿using ChessLibrary.Engines;
+﻿using ChessLibrary.Services.Engines;
 
 var state = new BoardState();
 HttpClient client = new HttpClient();

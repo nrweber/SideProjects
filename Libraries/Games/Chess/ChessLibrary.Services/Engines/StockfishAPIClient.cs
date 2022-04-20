@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 
-namespace ChessLibrary.Engines;
+namespace ChessLibrary.Services.Engines;
 
 
 

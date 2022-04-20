@@ -7,6 +7,7 @@
     <ProjectReference Include="..\..\Libraries\Weather\Weather.Blazor\Weather.Blazor.csproj" />
     <ProjectReference Include="..\..\Libraries\Games\Chess\ChessLibrary.Blazor\ChessLibrary.Blazor.csproj" />
     <ProjectReference Include="..\..\Libraries\BlazorBasics\BlazorBasics.csproj" />
+    <ProjectReference Include="..\..\Libraries\Games\Chess\ChessLibrary.Services\ChessLibrary.Services.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

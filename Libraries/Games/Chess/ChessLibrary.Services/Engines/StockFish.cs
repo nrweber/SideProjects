@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace ChessLibrary.Engines;
+namespace ChessLibrary.Services.Engines;
 
 
 public static class Stockfish

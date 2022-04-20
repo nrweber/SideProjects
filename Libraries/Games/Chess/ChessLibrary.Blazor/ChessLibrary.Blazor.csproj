@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChessLibrary\ChessLibrary.csproj" />
+    <ProjectReference Include="..\ChessLibrary.Services\ChessLibrary.Services.csproj" />
   </ItemGroup>
 
 </Project>

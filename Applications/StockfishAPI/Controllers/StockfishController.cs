@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ChessLibrary;
-using ChessLibrary.Engines;
+using ChessLibrary.Services.Engines;
 
 namespace StockfishAPI.Controllers;
 

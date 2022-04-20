@@ -1,6 +1,6 @@
 using Xunit;
 
-using ChessLibrary.Engines;
+using ChessLibrary.Services.Engines;
 
 namespace ChessLibrary.Test;
 
