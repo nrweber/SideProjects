@@ -16,7 +16,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("1 2 3 4 5 6 7 8")]
     public void ToBoardState_InputOfMoreOrLessThanSixSegmentsIsInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -39,7 +39,7 @@ public class ChessHeplerTest_ToBoardState
         };
 
 
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.True(valid);
         Assert.Equal(targetBoard, state.Board);
@@ -62,7 +62,7 @@ public class ChessHeplerTest_ToBoardState
         };
 
 
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.True(valid);
         Assert.Equal(targetBoard, state.Board);
@@ -85,7 +85,7 @@ public class ChessHeplerTest_ToBoardState
         };
 
 
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.True(valid);
         Assert.Equal(targetBoard, state.Board);
@@ -109,7 +109,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/5r2r/RNBQKBNR w KQkq - 0 1")]
     public void ToBoardState_RowsWithToMuchIsInvalid_RowsSevenToOne(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -119,7 +119,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/5r2r w KQkq - 0 1")]
     public void ToBoardState_RowsWithToMuchIsInvalid_RowOne(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -142,7 +142,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/5rr/RNBQKBNR w KQkq - 0 1")]
     public void ToBoardState_RowsWithNotEnoughIsInvalid_RowsSevenToOne(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -152,7 +152,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/5rr w KQkq - 0 1")]
     public void ToBoardState_RowsWithNotEnoughIsInvalid_RowOne(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -162,7 +162,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbxr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")]
     public void ToBoardState_InvalidCharactersInFenReturnsInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -173,7 +173,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1", PLAYER.BLACK)]
     public void ToBoardState_CurrentTurnSet(string input, PLAYER expected)
     {
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.Equal(state.CurrentTurn, expected);
     }
@@ -186,7 +186,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR - KQkq - 0 1")]
     public void ToBoardState_CurrentTurnOfAnthingBut_w_or_b_BothLowerIsInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -210,7 +210,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1",    false, false, false, false)]
     public void ToBoardState_CastlePossiblitiesSet(string input, bool whiteKingSide, bool whiteQueenSide, bool blackKingSide, bool blackQueenSide)
     {
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.Equal(whiteKingSide, state.WhiteCanKingCastle);
         Assert.Equal(whiteQueenSide, state.WhiteCanQueenCastle);
@@ -226,7 +226,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w _ - 0 1")]
     public void ToBoardState_InvalidCastleStrings_BadCharacterAndBadOrder(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -237,7 +237,7 @@ public class ChessHeplerTest_ToBoardState
     {
         var input = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-        (_, var state) = ChessHelper.ToBoardState(input);
+        (_, var state) = BoardState.ToBoardState(input);
 
         Assert.Null(state.EnPassanteSquare);
     }
@@ -250,7 +250,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e6 0 1", 5, 4)]
     public void ToBoardState_EnPassanteLocationSet(string input, int expectedRow, int expectedcol)
     {
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.Equal(new Location(expectedRow, expectedcol), state.EnPassanteSquare);
     }
@@ -262,7 +262,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq e5 0 1")]
     public void ToBoardState_EnPassante_RowsOtherThan_3_or_6_AreInvlid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -274,7 +274,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq i6 0 1")]
     public void ToBoardState_EnPassante_ColumnLetterOtherThan_a_Through_h_AreInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -286,7 +286,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq h 0 1")]
     public void ToBoardState_EnPassante_MustBeALengthOfTwo_NoExtraLetters(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -298,7 +298,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 13 1", 13)]
     public void ToBoardState_HalfMove_IfPositiveNumberItIsSetCorrectly(string input, int expected)
     {
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.True(valid);
         Assert.Equal(expected, state.HalfMovesSinceLastCaptureOrPawnMove);
@@ -311,7 +311,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - -13 1")]
     public void ToBoardState_HalfMove_NegativeNumbersAreInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -323,7 +323,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - + 1")]
     public void ToBoardState_HalfMove_NonNumbersAreInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -335,7 +335,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 13", 13)]
     public void ToBoardState_MoveNumber_IfPositiveNumberItIsSetCorrectly(string input, int expected)
     {
-        (var valid, var state) = ChessHelper.ToBoardState(input);
+        (var valid, var state) = BoardState.ToBoardState(input);
 
         Assert.True(valid);
         Assert.Equal(expected, state.MoveNumber);
@@ -348,7 +348,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 -13")]
     public void ToBoardState_MoveNumber_MustBeGreaterThanZero(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }
@@ -360,7 +360,7 @@ public class ChessHeplerTest_ToBoardState
     [InlineData("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 +")]
     public void ToBoardState_MoveNumber_NonNumbersAreInvalid(string input)
     {
-        (var valid, _) = ChessHelper.ToBoardState(input);
+        (var valid, _) = BoardState.ToBoardState(input);
 
         Assert.False(valid);
     }

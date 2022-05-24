@@ -33,7 +33,7 @@ public class ChessHeplerTest_MakeMove
 
         Move m = new Move(new Location(1,4), new Location(3,4));
 
-        var (moveMade, newState) = ChessHelper.MakeMove(state,m);
+        var (moveMade, newState) = state.MakeMove(m);
 
         Assert.True(moveMade);
         Assert.Equal(PIECE.NONE, newState.PieceAt(1,4));
@@ -48,7 +48,7 @@ public class ChessHeplerTest_MakeMove
 
         Move m = new Move(new Location(1,4), new Location(4,4));
 
-        var (moveMade, newState) = ChessHelper.MakeMove(state,m);
+        var (moveMade, newState) = state.MakeMove(m);
 
         Assert.False(moveMade);
         Assert.Equal(state, newState);
@@ -61,7 +61,7 @@ public class ChessHeplerTest_MakeMove
 
         Move m = new Move(new Location(1,4), new Location(3,4));
 
-        var (_, newState) = ChessHelper.MakeMove(state,m);
+        var (_, newState) = state.MakeMove(m);
 
         Assert.Equal(PIECE.WHITE_PAWN, state.PieceAt(1,4));
         Assert.Equal(PIECE.NONE, state.PieceAt(3,4));
@@ -80,14 +80,14 @@ public class ChessHeplerTest_MakeMove
 
         {
             Move m = new Move(new Location(0,1), new Location(2,2));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(1, state.HalfMovesSinceLastCaptureOrPawnMove);
         }
 
         {
             Move m = new Move(new Location(7,1), new Location(5,2));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(2, state.HalfMovesSinceLastCaptureOrPawnMove);
         }
@@ -103,7 +103,7 @@ public class ChessHeplerTest_MakeMove
 
         {
             Move m = new Move(new Location(1,1), new Location(2,1));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(0, state.HalfMovesSinceLastCaptureOrPawnMove);
         }
@@ -115,7 +115,7 @@ public class ChessHeplerTest_MakeMove
 
         {
             Move m = new Move(new Location(6,4), new Location(5,4));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(0, state.HalfMovesSinceLastCaptureOrPawnMove);
         }
@@ -132,7 +132,7 @@ public class ChessHeplerTest_MakeMove
         Move m = new Move(new Location(0,0), new Location(1,0));
 
 
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(0, state.HalfMovesSinceLastCaptureOrPawnMove);
     }
@@ -153,7 +153,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(0,4), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.False(state.WhiteCanKingCastle);
         Assert.False(state.WhiteCanQueenCastle);
@@ -176,7 +176,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(7,4), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.False(state.BlackCanKingCastle);
         Assert.False(state.BlackCanQueenCastle);
@@ -197,7 +197,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(0,7), new Location(1,7));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.False(state.WhiteCanKingCastle);
         Assert.True(state.WhiteCanQueenCastle);
@@ -217,7 +217,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(0,0), new Location(1,0));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.True(state.WhiteCanKingCastle);
         Assert.False(state.WhiteCanQueenCastle);
@@ -240,7 +240,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(startRow,startCol), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.True(state.WhiteCanKingCastle);
         Assert.True(state.WhiteCanQueenCastle);
@@ -259,7 +259,7 @@ public class ChessHeplerTest_MakeMove
         );
 
         Move m = new Move(new Location(0,4), new Location(0,6));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(PIECE.WHITE_KING, state.PieceAt(0,6));
         Assert.Equal(PIECE.WHITE_ROOK, state.PieceAt(0,5));
@@ -279,7 +279,7 @@ public class ChessHeplerTest_MakeMove
         );
 
         Move m = new Move(new Location(0,4), new Location(0,2));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(PIECE.WHITE_KING, state.PieceAt(0,2));
         Assert.Equal(PIECE.WHITE_ROOK, state.PieceAt(0,3));
@@ -301,7 +301,7 @@ public class ChessHeplerTest_MakeMove
         );
 
         Move m = new Move(new Location(7,7), new Location(6,7));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.False(state.BlackCanKingCastle);
         Assert.True(state.BlackCanQueenCastle);
@@ -322,7 +322,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(7,0), new Location(6,0));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.True(state.BlackCanKingCastle);
         Assert.False(state.BlackCanQueenCastle);
@@ -346,7 +346,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(startRow,startCol), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.True(state.BlackCanKingCastle);
         Assert.True(state.BlackCanQueenCastle);
@@ -367,7 +367,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(7,4), new Location(7,6));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(PIECE.BLACK_KING, state.PieceAt(7,6));
         Assert.Equal(PIECE.BLACK_ROOK, state.PieceAt(7,5));
@@ -389,7 +389,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(7,4), new Location(7,2));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(PIECE.BLACK_KING, state.PieceAt(7,2));
         Assert.Equal(PIECE.BLACK_ROOK, state.PieceAt(7,3));
@@ -404,28 +404,28 @@ public class ChessHeplerTest_MakeMove
 
         {
             Move m = new Move(new Location(0,1), new Location(2,2));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(1, state.MoveNumber);
         }
 
         {
             Move m = new Move(new Location(7,1), new Location(5,2));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(2, state.MoveNumber);
         }
 
         {
             Move m = new Move(new Location(1,4), new Location(2,4));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(2, state.MoveNumber);
         }
 
         {
             Move m = new Move(new Location(6,3), new Location(4,3));
-            (var moveMade, state) = ChessHelper.MakeMove(state,m);
+            (var moveMade, state) = state.MakeMove(m);
             Assert.True(moveMade);
             Assert.Equal(3, state.MoveNumber);
         }
@@ -450,7 +450,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(startRow,startCol), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Null(state.EnPassanteSquare);
     }
@@ -474,7 +474,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(startRow,startCol), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(new Location(enpRow, enpCol), state.EnPassanteSquare);
     }
@@ -498,7 +498,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(startRow,startCol), new Location(endRow,endCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Null(state.EnPassanteSquare);
     }
@@ -520,7 +520,7 @@ public class ChessHeplerTest_MakeMove
         );
 
         Move m = new Move(new Location(startRow,startCol), new Location(epRow,epCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(PIECE.NONE, state.PieceAt(startRow,startCol));
         Assert.Equal(PIECE.NONE, state.PieceAt(otherRow,otherCol));
@@ -544,7 +544,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(startRow,startCol), new Location(epRow,epCol));
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.True(moveMade);
         Assert.Equal(PIECE.NONE, state.PieceAt(startRow,startCol));
         Assert.Equal(PIECE.NONE, state.PieceAt(otherRow,otherCol));
@@ -568,7 +568,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(6,col), new Location(7,col), promotoTo);
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.Equal(PIECE.NONE, state.PieceAt(6,col));
         Assert.Equal(endPiece, state.PieceAt(7,col));
         Assert.True(moveMade);
@@ -590,7 +590,7 @@ public class ChessHeplerTest_MakeMove
 
 
         Move m = new Move(new Location(1,col), new Location(0,col), promotoTo);
-        (var moveMade, state) = ChessHelper.MakeMove(state,m);
+        (var moveMade, state) = state.MakeMove(m);
         Assert.Equal(PIECE.NONE, state.PieceAt(1,col));
         Assert.Equal(endPiece, state.PieceAt(0,col));
         Assert.True(moveMade);

@@ -13,7 +13,7 @@ public class ChessHeplerTest_PossibleMovesForLocation
     {
         BoardState state = new();
         Location loc = new(row,col);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }
@@ -26,7 +26,7 @@ public class ChessHeplerTest_PossibleMovesForLocation
     {
         BoardState state = new(){ CurrentTurn = PLAYER.BLACK};
         Location loc = new(row,col);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }
@@ -43,7 +43,7 @@ public class ChessHeplerTest_PossibleMovesForLocation
     {
         BoardState state = new(){ CurrentTurn = PLAYER.BLACK};
         Location loc = new(row,col);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
 

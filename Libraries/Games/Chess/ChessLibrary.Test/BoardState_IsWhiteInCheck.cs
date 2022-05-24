@@ -43,7 +43,7 @@ public class ChessHeplerTest_IsWhiteInCheck
             }
         };
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.False(result);
     }
@@ -67,7 +67,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(pawnRow,pawnCol)] = PIECE.BLACK_PAWN;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.True(result);
     }
@@ -122,7 +122,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(pieceRow, pieceCol)] = attackingPiece;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.True(result);
     }
@@ -170,7 +170,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(blockingRow, blockingCol)] = PIECE.BLACK_PAWN;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.False(result);
     }
@@ -207,7 +207,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(knightRow, knightCol)] = PIECE.BLACK_KNIGHT;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.True(result);
     }
@@ -244,7 +244,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(otherRow, otherCol)] = otherPiece;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.False(result);
     }
@@ -292,7 +292,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(pieceRow, pieceCol)] = attackingPiece;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.True(result);
     }
@@ -333,7 +333,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(blockingRow, blockingCol)] = PIECE.BLACK_ROOK;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.False(result);
     }
@@ -359,7 +359,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         Board[BoardArrayLocation(attackingRow, attackingCol)] = PIECE.BLACK_KING;
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.True(result);
     }
@@ -370,7 +370,7 @@ public class ChessHeplerTest_IsWhiteInCheck
         var Board = BlankBoard();
         BoardState state = new(Board);
 
-        bool result = ChessHelper.WhiteIsInCheck(state);
+        bool result = state.WhiteIsInCheck();
 
         Assert.False(result);
     }

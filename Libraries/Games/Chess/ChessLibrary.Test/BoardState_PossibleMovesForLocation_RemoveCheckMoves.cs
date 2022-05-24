@@ -39,7 +39,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_RemoveCheckMoves
 
 
         Location loc = new(1,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
 
@@ -62,7 +62,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_RemoveCheckMoves
 
 
         Location loc = new(1,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -71,7 +71,5 @@ public class ChessHeplerTest_PossibleMovesForLocation_RemoveCheckMoves
                 item => Assert.True(item.Equals(new Move(loc, new Location(4,3)))),
                 item => Assert.True(item.Equals(new Move(loc, new Location(5,3))))
                 );
-
-
     }
 }

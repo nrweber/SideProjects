@@ -9,11 +9,9 @@ public class ChessHeplerTest
     {
         string target = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-
         BoardState state = new();
 
-        string result = ChessHelper.ToFENNotation(state);
-
+        string result = state.ToFENNotation();
 
         Assert.Equal(target, result);
     }
@@ -41,7 +39,7 @@ public class ChessHeplerTest
             }
         };
 
-        string result = ChessHelper.ToFENNotation(state);
+        string result = state.ToFENNotation();
 
 
         Assert.Equal(target, result);
@@ -55,7 +53,7 @@ public class ChessHeplerTest
 
         BoardState state = new(){ CurrentTurn = PLAYER.BLACK};
 
-        string result = ChessHelper.ToFENNotation(state);
+        string result = state.ToFENNotation();
 
 
         Assert.Equal(target, result);
@@ -90,7 +88,7 @@ public class ChessHeplerTest
             BlackCanQueenCastle = BQ
         };
 
-        string result = ChessHelper.ToFENNotation(state);
+        string result = state.ToFENNotation();
 
         Assert.Equal(target, result);
     }
@@ -110,7 +108,7 @@ public class ChessHeplerTest
             EnPassanteSquare = new Location(){ Row = LocRow, Column = LocColumn}
         };
 
-        string result = ChessHelper.ToFENNotation(state);
+        string result = state.ToFENNotation();
 
         Assert.Equal(target, result);
     }
@@ -127,7 +125,7 @@ public class ChessHeplerTest
             HalfMovesSinceLastCaptureOrPawnMove = num
         };
 
-        string result = ChessHelper.ToFENNotation(state);
+        string result = state.ToFENNotation();
 
         Assert.Equal(target, result);
     }
@@ -144,7 +142,7 @@ public class ChessHeplerTest
             MoveNumber = num
         };
 
-        string result = ChessHelper.ToFENNotation(state);
+        string result = state.ToFENNotation();
 
         Assert.Equal(target, result);
     }

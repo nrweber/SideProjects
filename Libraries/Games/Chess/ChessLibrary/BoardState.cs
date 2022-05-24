@@ -2,12 +2,167 @@ using System.Text;
 
 namespace ChessLibrary;
 
-public static class ChessHelper
+public record BoardState(
+        PIECE[] Board,
+        PLAYER CurrentTurn = PLAYER.WHITE, 
+        bool WhiteCanKingCastle = true, 
+        bool WhiteCanQueenCastle = true, 
+        bool BlackCanKingCastle = true, 
+        bool BlackCanQueenCastle = true, 
+        Location? EnPassanteSquare = null,
+        int HalfMovesSinceLastCaptureOrPawnMove = 0,
+        int MoveNumber = 1
+        )
 {
     static readonly string[] PossibleCastleStrings = new  string[]{"KQkq", "KQk", "KQq", "KQ", "Kkq", "Kq", "Kk", "K", "Qkq", "Qq", "Qk", "Q", "kq", "k", "q", "-"};
     static readonly char[] ValidColumnLetters = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 
-    public static List<Move> PossibleMoves(BoardState state)
+    PIECE[] _board = Board;
+
+    public PIECE[] Board
+    {
+        get
+        {
+            //If you know a better way of making an array immutable here
+            // please let me know!!
+            return (PIECE[])_board.Clone();
+        }
+
+        init
+        {
+            _board = value;
+        }
+    }
+
+
+    public BoardState() :  this((PIECE[])BoardState.ClassicBoardSetup.Clone())
+    {
+
+    }
+
+
+    public PIECE PieceAt(int row, int col)
+    {
+        if(row < 0 || row > 7 || col < 0 || col > 7)
+            throw new ArgumentException($"Index out of bounds ({row},{col})");
+
+        int location = (row*8)+col;
+        return Board[location];
+    }
+
+
+
+    //This is the starting position for a clasic chess game.
+    private static readonly PIECE[] ClassicBoardSetup = 
+    {
+        PIECE.WHITE_ROOK, PIECE.WHITE_KNIGHT, PIECE.WHITE_BISHOP, PIECE.WHITE_QUEEN, PIECE.WHITE_KING, PIECE.WHITE_BISHOP, PIECE.WHITE_KNIGHT, PIECE.WHITE_ROOK,
+            PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN, PIECE.WHITE_PAWN,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE, PIECE.NONE,
+            PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN, PIECE.BLACK_PAWN,
+            PIECE.BLACK_ROOK, PIECE.BLACK_KNIGHT, PIECE.BLACK_BISHOP, PIECE.BLACK_QUEEN, PIECE.BLACK_KING, PIECE.BLACK_BISHOP, PIECE.BLACK_KNIGHT, PIECE.BLACK_ROOK
+    };
+
+
+
+    public  string ToFENNotation()
+    {
+        StringBuilder output = new StringBuilder();
+        output.Append(FENBoardString());
+        output.Append(" ");
+        output.Append((CurrentTurn == PLAYER.WHITE) ? "w" : "b");
+        output.Append(" ");
+        if(WhiteCanKingCastle)
+            output.Append("K");
+        if(WhiteCanQueenCastle)
+            output.Append("Q");
+        if(BlackCanKingCastle)
+            output.Append("k");
+        if(BlackCanQueenCastle)
+            output.Append("q");
+        if(WhiteCanKingCastle == false && WhiteCanQueenCastle == false && BlackCanKingCastle == false && BlackCanQueenCastle == false)
+            output.Append("-");
+        output.Append(" ");
+        if(EnPassanteSquare is null)
+            output.Append("-");
+        else
+            output.Append(EnPassanteSquare?.Algebraic);
+        output.Append(" ");
+        output.Append(HalfMovesSinceLastCaptureOrPawnMove);
+        output.Append(" ");
+        output.Append(MoveNumber);
+        return output.ToString();
+    }
+
+    private string FENBoardString()
+    {
+        StringBuilder output = new StringBuilder();
+
+        for(int i = 7; i >= 0; i--)
+        {
+            int blankCount = 0;
+            for(int j = 0; j < 8; j++)
+            {
+                var piece = PieceAt(i,j);
+                if(piece == PIECE.NONE)
+                {
+                    blankCount += 1;
+                }
+                else
+                {
+                    if(blankCount != 0)
+                    {
+                        output.Append(blankCount);
+                        blankCount = 0;
+                    }
+
+                    output.Append(PieceToFENString(piece));
+                }
+            }
+
+            if(blankCount != 0)
+                output.Append(blankCount);
+            if(i != 0)
+                output.Append("/");
+        }
+        return output.ToString();
+    }
+
+    private static string PieceToFENString(PIECE p)
+    {
+        switch(p)
+        {
+            case PIECE.BLACK_ROOK:
+                return "r";
+            case PIECE.BLACK_KNIGHT:
+                return "n";
+            case PIECE.BLACK_BISHOP:
+                return "b";
+            case PIECE.BLACK_QUEEN:
+                return "q";
+            case PIECE.BLACK_KING:
+                return "k";
+            case PIECE.BLACK_PAWN:
+                return "p";
+            case PIECE.WHITE_ROOK:
+                return "R";
+            case PIECE.WHITE_KNIGHT:
+                return "N";
+            case PIECE.WHITE_BISHOP:
+                return "B";
+            case PIECE.WHITE_QUEEN:
+                return "Q";
+            case PIECE.WHITE_KING:
+                return "K";
+            case PIECE.WHITE_PAWN:
+                return "P";
+        }
+        return "";
+    }
+
+    public  List<Move> PossibleMoves()
     {
         List<Move> moves = new();
         for(int r = 0; r <= 7; r++)
@@ -15,13 +170,13 @@ public static class ChessHelper
             for(int c = 0; c <= 7; c++)
             {
                 var loc = new Location(r,c);
-                moves.AddRange(PossibleMovesForLocation(state, loc));
+                moves.AddRange(PossibleMovesForLocation(loc));
             }
         }
         return moves;
     }
 
-    public static List<Move> PossibleMovesForLocation(BoardState state, Location loc)
+    public List<Move> PossibleMovesForLocation(Location loc)
     {
         //Return a blank list if the location is invalid
         if(loc.Row < 0 || loc.Row > 7 || loc.Column < 0 || loc.Column > 7 )
@@ -31,53 +186,53 @@ public static class ChessHelper
         List<Move> moves = new();
         // Add all moves possible by basic move rules. Moves that put
         // the current players king into check will be removed later.
-        if(state.CurrentTurn == PLAYER.WHITE)
+        if(CurrentTurn == PLAYER.WHITE)
         {
-            switch(state.PieceAt(loc.Row, loc.Column))
+            switch(PieceAt(loc.Row, loc.Column))
             {
                 case PIECE.WHITE_PAWN:
-                    AddWhitePawnMoves(loc, state, moves);
+                    AddWhitePawnMoves(loc, moves);
                     break;
                 case PIECE.WHITE_ROOK:
-                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    AddColumnRowMoves(loc, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_KNIGHT:
-                    AddKnightMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    AddKnightMoves(loc, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_BISHOP:
-                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    AddDiagonalMoves(loc, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_QUEEN:
-                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.WHITE);
-                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    AddColumnRowMoves(loc, moves, LOCATION_COLOR.WHITE);
+                    AddDiagonalMoves(loc, moves, LOCATION_COLOR.WHITE);
                     break;
                 case PIECE.WHITE_KING:
-                    AddKingMoves(loc, state, moves, LOCATION_COLOR.WHITE);
+                    AddKingMoves(loc, moves, LOCATION_COLOR.WHITE);
                     break;
             }
         }
         else
         {
-            switch(state.PieceAt(loc.Row, loc.Column))
+            switch(PieceAt(loc.Row, loc.Column))
             {
                 case PIECE.BLACK_PAWN:
-                    AddBlackPawnMoves(loc, state, moves);
+                    AddBlackPawnMoves(loc, moves);
                     break;
                 case PIECE.BLACK_ROOK:
-                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    AddColumnRowMoves(loc, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_KNIGHT:
-                    AddKnightMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    AddKnightMoves(loc, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_BISHOP:
-                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    AddDiagonalMoves(loc, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_QUEEN:
-                    AddColumnRowMoves(loc, state, moves, LOCATION_COLOR.BLACK);
-                    AddDiagonalMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    AddColumnRowMoves(loc, moves, LOCATION_COLOR.BLACK);
+                    AddDiagonalMoves(loc, moves, LOCATION_COLOR.BLACK);
                     break;
                 case PIECE.BLACK_KING:
-                    AddKingMoves(loc, state, moves, LOCATION_COLOR.BLACK);
+                    AddKingMoves(loc, moves, LOCATION_COLOR.BLACK);
                     break;
             }
         }
@@ -85,16 +240,16 @@ public static class ChessHelper
         List<Move> goodMoves = new();
         foreach(var move in moves)
         {
-            PIECE[] newBoard = state.Board;
-            newBoard[(move.End.Row*8)+move.End.Column] = state.PieceAt(move.Start.Row, move.Start.Column);
+            PIECE[] newBoard = Board;
+            newBoard[(move.End.Row*8)+move.End.Column] = PieceAt(move.Start.Row, move.Start.Column);
             newBoard[(move.Start.Row*8)+move.Start.Column] = PIECE.NONE;
-            BoardState stateCopy = state with {Board = newBoard};
+            BoardState stateCopy = this with {Board = newBoard};
 
-            if(state.CurrentTurn == PLAYER.WHITE && false == WhiteIsInCheck(stateCopy))
+            if(CurrentTurn == PLAYER.WHITE && false == stateCopy.WhiteIsInCheck())
             {
                 goodMoves.Add(move);
             }
-            if(state.CurrentTurn == PLAYER.BLACK && false == BlackIsInCheck(stateCopy))
+            if(CurrentTurn == PLAYER.BLACK && false == stateCopy.BlackIsInCheck())
             {
                 goodMoves.Add(move);
             }
@@ -108,30 +263,30 @@ public static class ChessHelper
         return (row*8)+col;
     }
 
-    public static (bool moveMade, BoardState newState) MakeMove(BoardState originalState, Move newMove)
+    public (bool moveMade, BoardState newState) MakeMove(Move newMove)
     {
         ////////////////////////////////////////////////////
         // Copy the state
-        PLAYER playerMakingMove = originalState.CurrentTurn;
+        PLAYER playerMakingMove = CurrentTurn;
 
         ////////////////////////////////////////////////////
         // Check if it is a valid move
-        var validMoves = PossibleMoves(originalState);
+        var validMoves = PossibleMoves();
         if(false == validMoves.Contains(newMove))
         {
-            return (false, originalState);
+            return (false, this);
         }
 
         ////////////////////////////////////////////////////
         // Useful info from move
         Location startLoc = newMove.Start;
-        PIECE pieceAtStartLocation = originalState.PieceAt(startLoc.Row, startLoc.Column);
+        PIECE pieceAtStartLocation = PieceAt(startLoc.Row, startLoc.Column);
         Location endLoc = newMove.End;
-        PIECE pieceAtEndLocation = originalState.PieceAt(endLoc.Row, endLoc.Column);
+        PIECE pieceAtEndLocation = PieceAt(endLoc.Row, endLoc.Column);
 
         ////////////////////////////////////////////////////
         // Update Board
-        var newBoard = originalState.Board;
+        var newBoard = Board;
 
         newBoard[BoardArrayLocation(newMove.End.Row, newMove.End.Column)] = newBoard[BoardArrayLocation(newMove.Start.Row, newMove.Start.Column)];
         newBoard[BoardArrayLocation(newMove.Start.Row, newMove.Start.Column)] = PIECE.NONE;
@@ -166,29 +321,29 @@ public static class ChessHelper
 
 
         //En Pasante: remove pawn
-        if(pieceAtStartLocation == PIECE.WHITE_PAWN && endLoc == originalState.EnPassanteSquare && originalState.EnPassanteSquare != null)
+        if(pieceAtStartLocation == PIECE.WHITE_PAWN && endLoc == EnPassanteSquare && EnPassanteSquare != null)
         {
-            Location a = (Location)originalState.EnPassanteSquare; // TODO: this gets around a strange error that Row and Column are not accessable. Need to look into this more.
+            Location a = (Location)EnPassanteSquare; // TODO: this gets around a strange error that Row and Column are not accessable. Need to look into this more.
             newBoard[BoardArrayLocation(a.Row-1, a.Column)]= PIECE.NONE;
         }
-        if(pieceAtStartLocation == PIECE.BLACK_PAWN && endLoc == originalState.EnPassanteSquare && originalState.EnPassanteSquare != null)
+        if(pieceAtStartLocation == PIECE.BLACK_PAWN && endLoc == EnPassanteSquare && EnPassanteSquare != null)
         {
-            Location a = (Location)originalState.EnPassanteSquare; // TODO: this gets around a strange error that Row and Column are not accessable. Need to look into this more.
+            Location a = (Location)EnPassanteSquare; // TODO: this gets around a strange error that Row and Column are not accessable. Need to look into this more.
             newBoard[BoardArrayLocation(a.Row+1, a.Column)]= PIECE.NONE;
         }
 
 
         ////////////////////////////////////////////////////
         // Flip turn
-        var newCurrentTurn = (originalState.CurrentTurn == PLAYER.WHITE) ? PLAYER.BLACK : PLAYER.WHITE;
+        var newCurrentTurn = (CurrentTurn == PLAYER.WHITE) ? PLAYER.BLACK : PLAYER.WHITE;
 
 
         ////////////////////////////////////////////////////
         // Check casteling possibilities
-        bool newWhiteCanKingCastle = originalState.WhiteCanKingCastle;
-        bool newWhiteCanQueenCastle = originalState.WhiteCanQueenCastle;
-        bool newBlackCanKingCastle = originalState.BlackCanKingCastle;
-        bool newBlackCanQueenCastle = originalState.BlackCanQueenCastle;
+        bool newWhiteCanKingCastle = WhiteCanKingCastle;
+        bool newWhiteCanQueenCastle = WhiteCanQueenCastle;
+        bool newBlackCanKingCastle = BlackCanKingCastle;
+        bool newBlackCanQueenCastle = BlackCanQueenCastle;
 
         if(pieceAtStartLocation == PIECE.WHITE_KING)
         {
@@ -228,7 +383,7 @@ public static class ChessHelper
 
         ////////////////////////////////////////////////////
         // update half move counter
-        int newHalfMovesSinceLastCaptureOrPawnMove = originalState.HalfMovesSinceLastCaptureOrPawnMove;
+        int newHalfMovesSinceLastCaptureOrPawnMove = HalfMovesSinceLastCaptureOrPawnMove;
         if( PIECE.WHITE_PAWN == pieceAtStartLocation || PIECE.BLACK_PAWN == pieceAtStartLocation || PIECE.NONE != pieceAtEndLocation)
             newHalfMovesSinceLastCaptureOrPawnMove = 0;
         else
@@ -236,8 +391,8 @@ public static class ChessHelper
 
         ////////////////////////////////////////////////////
         // up trun if was black's turn
-        int newMoveNumber = originalState.MoveNumber;
-        if(originalState.CurrentTurn == PLAYER.BLACK)
+        int newMoveNumber = MoveNumber;
+        if(CurrentTurn == PLAYER.BLACK)
             newMoveNumber += 1;
 
         var newState = new BoardState
@@ -257,10 +412,10 @@ public static class ChessHelper
         return (true, newState);
     }
 
-    public static bool WhiteIsInCheck(BoardState state)
+    public bool WhiteIsInCheck()
     {
         //Find the White King
-        var loc = FindPiece(state, PIECE.WHITE_KING);
+        var loc = FindPiece(PIECE.WHITE_KING);
 
         // White is not in check if ther is no king.
         // These allows the BoardState to be used for other things then a game
@@ -269,11 +424,11 @@ public static class ChessHelper
             return false;
 
         if(
-                PawnAttackingKing(state, PLAYER.WHITE, loc.row, loc.col) ||
-                KnightAttackingKing(state, PLAYER.WHITE, loc.row, loc.col) ||
-                DiagonalAttackinOnKing(state, PLAYER.WHITE, loc.row, loc.col) ||
-                ColumnRowAttackOnKing(state, PLAYER.WHITE, loc.row, loc.col) ||
-                KingAttackOnKing(state, PLAYER.WHITE, loc.row, loc.col)
+                PawnAttackingKing(PLAYER.WHITE, loc.row, loc.col) ||
+                KnightAttackingKing(PLAYER.WHITE, loc.row, loc.col) ||
+                DiagonalAttackinOnKing(PLAYER.WHITE, loc.row, loc.col) ||
+                ColumnRowAttackOnKing(PLAYER.WHITE, loc.row, loc.col) ||
+                KingAttackOnKing(PLAYER.WHITE, loc.row, loc.col)
           )
         {
             return true;
@@ -282,10 +437,10 @@ public static class ChessHelper
         return false;
     }
 
-    public static bool BlackIsInCheck(BoardState state)
+    public bool BlackIsInCheck()
     {
         //Find the Black King
-        var loc = FindPiece(state, PIECE.BLACK_KING);
+        var loc = FindPiece(PIECE.BLACK_KING);
 
         // Black is not in check if ther is no king.
         // These allows the BoardState to be used for other things then a game
@@ -294,46 +449,17 @@ public static class ChessHelper
             return false;
 
         if(
-                PawnAttackingKing(state, PLAYER.BLACK, loc.row, loc.col) ||
-                KnightAttackingKing(state, PLAYER.BLACK, loc.row, loc.col) ||
-                DiagonalAttackinOnKing(state, PLAYER.BLACK, loc.row, loc.col) ||
-                ColumnRowAttackOnKing(state, PLAYER.BLACK, loc.row, loc.col) ||
-                KingAttackOnKing(state, PLAYER.BLACK, loc.row, loc.col)
+                PawnAttackingKing(PLAYER.BLACK, loc.row, loc.col) ||
+                KnightAttackingKing(PLAYER.BLACK, loc.row, loc.col) ||
+                DiagonalAttackinOnKing(PLAYER.BLACK, loc.row, loc.col) ||
+                ColumnRowAttackOnKing(PLAYER.BLACK, loc.row, loc.col) ||
+                KingAttackOnKing(PLAYER.BLACK, loc.row, loc.col)
           )
         {
             return true;
         }
 
         return false;
-    }
-
-    public static string ToFENNotation(BoardState state)
-    {
-        StringBuilder output = new StringBuilder();
-        output.Append(FENBoardString(state));
-        output.Append(" ");
-        output.Append((state.CurrentTurn == PLAYER.WHITE) ? "w" : "b");
-        output.Append(" ");
-        if(state.WhiteCanKingCastle)
-            output.Append("K");
-        if(state.WhiteCanQueenCastle)
-            output.Append("Q");
-        if(state.BlackCanKingCastle)
-            output.Append("k");
-        if(state.BlackCanQueenCastle)
-            output.Append("q");
-        if(state.WhiteCanKingCastle == false && state.WhiteCanQueenCastle == false && state.BlackCanKingCastle == false && state.BlackCanQueenCastle == false)
-            output.Append("-");
-        output.Append(" ");
-        if(state.EnPassanteSquare is null)
-            output.Append("-");
-        else
-            output.Append(state.EnPassanteSquare?.Algebraic);
-        output.Append(" ");
-        output.Append(state.HalfMovesSinceLastCaptureOrPawnMove);
-        output.Append(" ");
-        output.Append(state.MoveNumber);
-        return output.ToString();
     }
 
 
@@ -487,72 +613,6 @@ public static class ChessHelper
     }
 
 
-    private static string FENBoardString(BoardState state)
-    {
-        StringBuilder output = new StringBuilder();
-
-        for(int i = 7; i >= 0; i--)
-        {
-            int blankCount = 0;
-            for(int j = 0; j < 8; j++)
-            {
-                var piece = state.PieceAt(i,j);
-                if(piece == PIECE.NONE)
-                {
-                    blankCount += 1;
-                }
-                else
-                {
-                    if(blankCount != 0)
-                    {
-                        output.Append(blankCount);
-                        blankCount = 0;
-                    }
-
-                    output.Append(PieceToFENString(piece));
-                }
-            }
-
-            if(blankCount != 0)
-                output.Append(blankCount);
-            if(i != 0)
-                output.Append("/");
-        }
-        return output.ToString();
-    }
-
-    private static string PieceToFENString(PIECE p)
-    {
-        switch(p)
-        {
-            case PIECE.BLACK_ROOK:
-                return "r";
-            case PIECE.BLACK_KNIGHT:
-                return "n";
-            case PIECE.BLACK_BISHOP:
-                return "b";
-            case PIECE.BLACK_QUEEN:
-                return "q";
-            case PIECE.BLACK_KING:
-                return "k";
-            case PIECE.BLACK_PAWN:
-                return "p";
-            case PIECE.WHITE_ROOK:
-                return "R";
-            case PIECE.WHITE_KNIGHT:
-                return "N";
-            case PIECE.WHITE_BISHOP:
-                return "B";
-            case PIECE.WHITE_QUEEN:
-                return "Q";
-            case PIECE.WHITE_KING:
-                return "K";
-            case PIECE.WHITE_PAWN:
-                return "P";
-        }
-        return "";
-    }
-
     private static PIECE PromotionToPiece(PROMOTION_PIECE promotionPiece, PLAYER player)
     {
         switch(promotionPiece)
@@ -601,13 +661,13 @@ public static class ChessHelper
         return PIECE.NONE;
     }
 
-    private static (int row, int col) FindPiece(BoardState state, PIECE pieceToLocate)
+    private (int row, int col) FindPiece(PIECE pieceToLocate)
     {
         for(int row = 0; row <= 7; row++)
         {
             for(int col = 0; col <= 7; col++)
             {
-                if(state.PieceAt(row,col) == pieceToLocate)
+                if(PieceAt(row,col) == pieceToLocate)
                 {
                     return (row, col);
                 }
@@ -617,26 +677,26 @@ public static class ChessHelper
         return (-1, -1);
     }
 
-    private static bool PawnAttackingKing(BoardState state, PLAYER player, int kingRow, int kingCol)
+    private bool PawnAttackingKing(PLAYER player, int kingRow, int kingCol)
     {
         if(player == PLAYER.WHITE)
         {
-            if(kingRow != 7 && kingCol != 0 && state.PieceAt(kingRow+1, kingCol-1) == PIECE.BLACK_PAWN)
+            if(kingRow != 7 && kingCol != 0 && PieceAt(kingRow+1, kingCol-1) == PIECE.BLACK_PAWN)
             {
                 return true;
             }
-            if(kingRow != 7 && kingCol != 7 && state.PieceAt(kingRow+1, kingCol+1) == PIECE.BLACK_PAWN)
+            if(kingRow != 7 && kingCol != 7 && PieceAt(kingRow+1, kingCol+1) == PIECE.BLACK_PAWN)
             {
                 return true;
             }
         }
         else if(player == PLAYER.BLACK)
         {
-            if(kingRow != 0 && kingCol != 0 && state.PieceAt(kingRow-1, kingCol-1) == PIECE.WHITE_PAWN)
+            if(kingRow != 0 && kingCol != 0 && PieceAt(kingRow-1, kingCol-1) == PIECE.WHITE_PAWN)
             {
                 return true;
             }
-            if(kingRow != 0 && kingCol != 7 && state.PieceAt(kingRow-1, kingCol+1) == PIECE.WHITE_PAWN)
+            if(kingRow != 0 && kingCol != 7 && PieceAt(kingRow-1, kingCol+1) == PIECE.WHITE_PAWN)
             {
                 return true;
             }
@@ -644,7 +704,7 @@ public static class ChessHelper
         return false;
     }
 
-    private static bool KnightAttackingKing(BoardState state, PLAYER player, int kingRow, int kingCol)
+    private bool KnightAttackingKing(PLAYER player, int kingRow, int kingCol)
     {
         PIECE otherColorKnight = (player == PLAYER.WHITE) ? PIECE.BLACK_KNIGHT : PIECE.WHITE_KNIGHT;
 
@@ -654,7 +714,7 @@ public static class ChessHelper
             int row = kingRow + m.rowDiff;
             int col = kingCol + m.colDiff;
 
-            if( row >= 0 && row <= 7 && col >= 0 && col <= 7 && state.PieceAt(row, col) == otherColorKnight)
+            if( row >= 0 && row <= 7 && col >= 0 && col <= 7 && PieceAt(row, col) == otherColorKnight)
             {
                 return true;
             }
@@ -662,7 +722,7 @@ public static class ChessHelper
         return false;
     }
 
-    private static bool DiagonalAttackinOnKing(BoardState state, PLAYER player, int kingRow, int kingCol)
+    private bool DiagonalAttackinOnKing(PLAYER player, int kingRow, int kingCol)
     {
         PIECE otherColorBishop = (player == PLAYER.WHITE) ? PIECE.BLACK_BISHOP : PIECE.WHITE_BISHOP;
         PIECE otherColorQueen = (player == PLAYER.WHITE) ? PIECE.BLACK_QUEEN : PIECE.WHITE_QUEEN;
@@ -681,13 +741,13 @@ public static class ChessHelper
                     break;
                 }
 
-                if(state.PieceAt(checkRow, checkCol) == otherColorBishop || state.PieceAt(checkRow, checkCol) == otherColorQueen)
+                if(PieceAt(checkRow, checkCol) == otherColorBishop || PieceAt(checkRow, checkCol) == otherColorQueen)
                 {
                     return true;
                 }
 
                 //If we hit another piece besides a rook or queen, break out of the loop.
-                if(state.PieceAt(checkRow, checkCol) != PIECE.NONE)
+                if(PieceAt(checkRow, checkCol) != PIECE.NONE)
                 {
                     break;
                 }
@@ -698,7 +758,7 @@ public static class ChessHelper
         return false;
     }
 
-    private static bool ColumnRowAttackOnKing(BoardState state, PLAYER player, int kingRow, int kingCol)
+    private bool ColumnRowAttackOnKing(PLAYER player, int kingRow, int kingCol)
     {
         PIECE otherColorRook = (player == PLAYER.WHITE) ? PIECE.BLACK_ROOK : PIECE.WHITE_ROOK;
         PIECE otherColorQueen = (player == PLAYER.WHITE) ? PIECE.BLACK_QUEEN : PIECE.WHITE_QUEEN;
@@ -718,13 +778,13 @@ public static class ChessHelper
                     break;
                 }
 
-                if(state.PieceAt(checkRow, checkCol) == otherColorRook || state.PieceAt(checkRow, checkCol) == otherColorQueen)
+                if(PieceAt(checkRow, checkCol) == otherColorRook || PieceAt(checkRow, checkCol) == otherColorQueen)
                 {
                     return true;
                 }
 
                 //If we hit another piece besides a rook or queen, break out of the loop.
-                if(state.PieceAt(checkRow, checkCol) != PIECE.NONE)
+                if(PieceAt(checkRow, checkCol) != PIECE.NONE)
                 {
                     break;
                 }
@@ -733,7 +793,7 @@ public static class ChessHelper
         return false;
     }
 
-    private static bool KingAttackOnKing(BoardState state, PLAYER player, int kingRow, int kingCol)
+    private bool KingAttackOnKing(PLAYER player, int kingRow, int kingCol)
     {
         // This function may seem strange since it is illegal for a king to move to be in position to attack a king.
         // but that is exactly why we need this function. This is useful when checking if a move is legal.
@@ -746,7 +806,7 @@ public static class ChessHelper
             int c = kingCol + diff.colDiff;
             if(  r >= 0 && r <= 7 && c >= 0 && c <= 7)
             {
-                if(state.PieceAt(r,c) == otherColorKing)
+                if(PieceAt(r,c) == otherColorKing)
                 {
                     return true;
                 }
@@ -774,9 +834,9 @@ public static class ChessHelper
         }
     }
 
-    private static void AddWhitePawnMoves(Location loc, BoardState state, List<Move> moves)
+    private void AddWhitePawnMoves(Location loc, List<Move> moves)
     {
-        if(state.PieceAt(loc.Row+1, loc.Column) == PIECE.NONE)
+        if(PieceAt(loc.Row+1, loc.Column) == PIECE.NONE)
         {
             //move foward 1 for row 6 which would be a promotion
             if(loc.Row == 6)
@@ -794,13 +854,13 @@ public static class ChessHelper
         }
 
         //move foward 2
-        if(loc.Row == 1 && state.PieceAt(loc.Row+1, loc.Column) == PIECE.NONE && state.PieceAt(loc.Row+2, loc.Column) == PIECE.NONE)
+        if(loc.Row == 1 && PieceAt(loc.Row+1, loc.Column) == PIECE.NONE && PieceAt(loc.Row+2, loc.Column) == PIECE.NONE)
         {
             moves.Add(new Move(loc, new Location(loc.Row+2, loc.Column)));
         }
 
         //attack up and left
-        if(loc.Column != 0 && LOCATION_COLOR.BLACK == LocationColor(state.PieceAt(loc.Row+1, loc.Column-1)))
+        if(loc.Column != 0 && LOCATION_COLOR.BLACK == LocationColor(PieceAt(loc.Row+1, loc.Column-1)))
         {
             //attack and promote if on row 6)
             if(loc.Row == 6)
@@ -817,7 +877,7 @@ public static class ChessHelper
         }
 
         //attack up and right
-        if(loc.Column != 7 && LOCATION_COLOR.BLACK == LocationColor(state.PieceAt(loc.Row+1, loc.Column+1)))
+        if(loc.Column != 7 && LOCATION_COLOR.BLACK == LocationColor(PieceAt(loc.Row+1, loc.Column+1)))
         {
             //attach and promote if on row 6)
             if(loc.Row == 6)
@@ -835,13 +895,13 @@ public static class ChessHelper
 
 
         //EnPassante Left
-        if(state.EnPassanteSquare?.Row == loc.Row+1 && state.EnPassanteSquare?.Column == loc.Column-1)
+        if(EnPassanteSquare?.Row == loc.Row+1 && EnPassanteSquare?.Column == loc.Column-1)
         {
             moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column-1)));
         }
 
         //EnPassante Right
-        if(state.EnPassanteSquare?.Row == loc.Row+1 && state.EnPassanteSquare?.Column == loc.Column+1)
+        if(EnPassanteSquare?.Row == loc.Row+1 && EnPassanteSquare?.Column == loc.Column+1)
         {
             moves.Add(new Move(loc, new Location(loc.Row+1, loc.Column+1)));
         }
@@ -849,9 +909,9 @@ public static class ChessHelper
     }
 
 
-    private static void AddBlackPawnMoves(Location loc, BoardState state, List<Move> moves)
+    private void AddBlackPawnMoves(Location loc, List<Move> moves)
     {
-        if(state.PieceAt(loc.Row-1, loc.Column) == PIECE.NONE)
+        if(PieceAt(loc.Row-1, loc.Column) == PIECE.NONE)
         {
             //move foward 1 for row 1 which would be a promotion
             if(loc.Row == 1)
@@ -868,13 +928,13 @@ public static class ChessHelper
             }
         }
 
-        if(loc.Row == 6 && state.PieceAt(loc.Row-1, loc.Column) == PIECE.NONE && state.PieceAt(loc.Row-2, loc.Column) == PIECE.NONE)
+        if(loc.Row == 6 && PieceAt(loc.Row-1, loc.Column) == PIECE.NONE && PieceAt(loc.Row-2, loc.Column) == PIECE.NONE)
         {
             moves.Add(new Move(loc, new Location(loc.Row-2, loc.Column)));
         }
 
         //attack down and left
-        if(loc.Column != 0 && LOCATION_COLOR.WHITE == LocationColor(state.PieceAt(loc.Row-1, loc.Column-1)))
+        if(loc.Column != 0 && LOCATION_COLOR.WHITE == LocationColor(PieceAt(loc.Row-1, loc.Column-1)))
         {
             //attack and promote if on row 1
             if(loc.Row == 1)
@@ -891,7 +951,7 @@ public static class ChessHelper
         }
 
         //attack down and right
-        if(loc.Column != 7 && LOCATION_COLOR.WHITE == LocationColor(state.PieceAt(loc.Row-1, loc.Column+1)))
+        if(loc.Column != 7 && LOCATION_COLOR.WHITE == LocationColor(PieceAt(loc.Row-1, loc.Column+1)))
         {
             //attach and promote if on row 1
             if(loc.Row == 1)
@@ -908,19 +968,19 @@ public static class ChessHelper
         }
 
         //EnPassante Left
-        if(state.EnPassanteSquare?.Row == loc.Row-1 && state.EnPassanteSquare?.Column == loc.Column-1)
+        if(EnPassanteSquare?.Row == loc.Row-1 && EnPassanteSquare?.Column == loc.Column-1)
         {
             moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column-1)));
         }
 
         //EnPassante Right
-        if(state.EnPassanteSquare?.Row == loc.Row-1 && state.EnPassanteSquare?.Column == loc.Column+1)
+        if(EnPassanteSquare?.Row == loc.Row-1 && EnPassanteSquare?.Column == loc.Column+1)
         {
             moves.Add(new Move(loc, new Location(loc.Row-1, loc.Column+1)));
         }
     }
 
-    private static void AddColumnRowMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    private void AddColumnRowMoves(Location loc, List<Move> moves, LOCATION_COLOR playerColor)
     {
         List<(int rowDiff, int colDiff)> diffs = new(){ (1,0), (-1,0), (0, -1), (0,1)};
 
@@ -930,7 +990,7 @@ public static class ChessHelper
             int c = loc.Column+p.colDiff;
             while(r >= 0 && r <= 7 && c >= 0 && c <= 7)
             {
-                var locColor = LocationColor(state.PieceAt(r,c));
+                var locColor = LocationColor(PieceAt(r,c));
                 if(locColor != playerColor)
                 {
                     moves.Add(new Move(loc, new Location(r, c)));
@@ -947,7 +1007,7 @@ public static class ChessHelper
         }
     }
 
-    private static void AddDiagonalMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    private void AddDiagonalMoves(Location loc, List<Move> moves, LOCATION_COLOR playerColor)
     {
         List<(int rowDiff, int colDiff)> diffs = new(){ (1,-1), (1,1), (-1, 1), (-1,-1)};
         foreach(var p in diffs)
@@ -956,7 +1016,7 @@ public static class ChessHelper
             int c = loc.Column+p.colDiff;
             while(r >= 0 && r <= 7 && c >= 0 && c <= 7)
             {
-                var locColor = LocationColor(state.PieceAt(r,c));
+                var locColor = LocationColor(PieceAt(r,c));
                 if(locColor != playerColor)
                 {
                     moves.Add(new Move(loc, new Location(r, c)));
@@ -974,7 +1034,7 @@ public static class ChessHelper
     }
 
 
-    private static void AddKnightMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    private void AddKnightMoves(Location loc, List<Move> moves, LOCATION_COLOR playerColor)
     {
         List<(int rowDiff, int colDiff)> diffs = new(){(2,-1), (2,1), (1,2), (-1,2), (-2,1), (-2,-1), (-1,-2), (1,-2)};
 
@@ -983,14 +1043,14 @@ public static class ChessHelper
             int r = loc.Row + diff.rowDiff;
             int c = loc.Column + diff.colDiff;
 
-            if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(state.PieceAt(r,c)))
+            if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(PieceAt(r,c)))
             {
                 moves.Add(new Move(loc, new Location(r, c)));
             }
         }
     }
 
-    private static void AddKingMoves(Location loc, BoardState state, List<Move> moves, LOCATION_COLOR playerColor)
+    private void AddKingMoves(Location loc, List<Move> moves, LOCATION_COLOR playerColor)
     {
         List<(int rowDiff, int colDiff)> diffs = new(){(1,-1), (1,0), (1,1), (0,-1), (0,1), (-1,-1), (-1,0), (-1,1)};
 
@@ -999,74 +1059,79 @@ public static class ChessHelper
             int r = loc.Row + diff.rowDiff;
             int c = loc.Column + diff.colDiff;
 
-            if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(state.PieceAt(r,c)))
+            if( c >= 0 && c <= 7 && r >= 0 && r <= 7 && playerColor != LocationColor(PieceAt(r,c)))
             {
                 moves.Add(new Move(loc, new Location(r, c)));
             }
         }
 
-        if( playerColor == LOCATION_COLOR.WHITE && loc.Row == 0 && loc.Column == 4 && WhiteIsInCheck(state) == false)
+        if( playerColor == LOCATION_COLOR.WHITE && loc.Row == 0 && loc.Column == 4 && WhiteIsInCheck() == false)
         {
-            if(state.WhiteCanKingCastle == true && state.PieceAt(0,5) == PIECE.NONE && state.PieceAt(0,6) == PIECE.NONE && state.PieceAt(0,7) == PIECE.WHITE_ROOK && WhiteKingWouldMoveThroughCheckKingSide(state) == false)
+            if(WhiteCanKingCastle == true && PieceAt(0,5) == PIECE.NONE && PieceAt(0,6) == PIECE.NONE && PieceAt(0,7) == PIECE.WHITE_ROOK && WhiteKingWouldMoveThroughCheckKingSide() == false)
             {
                 moves.Add(new Move(loc, new Location(0, 6)));
             }
 
-            if( state.WhiteCanQueenCastle == true && state.PieceAt(0,3) == PIECE.NONE && state.PieceAt(0,2) == PIECE.NONE && state.PieceAt(0,1) == PIECE.NONE && state.PieceAt(0,0) == PIECE.WHITE_ROOK && WhiteKingWouldMoveThroughCheckQueenSide(state) == false)
+            if(WhiteCanQueenCastle == true && PieceAt(0,3) == PIECE.NONE && PieceAt(0,2) == PIECE.NONE && PieceAt(0,1) == PIECE.NONE && PieceAt(0,0) == PIECE.WHITE_ROOK && WhiteKingWouldMoveThroughCheckQueenSide() == false)
             {
                 moves.Add(new Move(loc, new Location(0, 2)));
             }
         }
 
-        if( playerColor == LOCATION_COLOR.BLACK && loc.Row == 7 && loc.Column == 4 && BlackIsInCheck(state) == false)
+        if( playerColor == LOCATION_COLOR.BLACK && loc.Row == 7 && loc.Column == 4 && BlackIsInCheck() == false)
         {
-            if( state.BlackCanKingCastle == true && state.PieceAt(7,5) == PIECE.NONE && state.PieceAt(7,6) == PIECE.NONE && state.PieceAt(7,7) == PIECE.BLACK_ROOK && BlackKingWouldMoveThroughCheckKingSide(state) == false)
+            if(BlackCanKingCastle == true && PieceAt(7,5) == PIECE.NONE && PieceAt(7,6) == PIECE.NONE && PieceAt(7,7) == PIECE.BLACK_ROOK && BlackKingWouldMoveThroughCheckKingSide() == false)
             {
                 moves.Add(new Move(loc, new Location(7, 6)));
             }
 
-            if( state.BlackCanQueenCastle == true && state.PieceAt(7,3) == PIECE.NONE && state.PieceAt(7,2) == PIECE.NONE && state.PieceAt(7,1) == PIECE.NONE && state.PieceAt(7,0) == PIECE.BLACK_ROOK && BlackKingWouldMoveThroughCheckQueenSide(state) == false)
+            if( BlackCanQueenCastle == true && PieceAt(7,3) == PIECE.NONE && PieceAt(7,2) == PIECE.NONE && PieceAt(7,1) == PIECE.NONE && PieceAt(7,0) == PIECE.BLACK_ROOK && BlackKingWouldMoveThroughCheckQueenSide() == false)
             {
                 moves.Add(new Move(loc, new Location(7, 2)));
             }
         }
     }
 
-    private static bool WhiteKingWouldMoveThroughCheckKingSide(BoardState state)
+    private bool WhiteKingWouldMoveThroughCheckKingSide()
     {
-        var Board = state.Board;
-        Board[BoardArrayLocation(0,4)] = PIECE.NONE;
-        Board[BoardArrayLocation(0,5)] = PIECE.WHITE_KING;
+        var BoardCopy = this.Board;
+        BoardCopy[BoardArrayLocation(0,4)] = PIECE.NONE;
+        BoardCopy[BoardArrayLocation(0,5)] = PIECE.WHITE_KING;
 
-        return WhiteIsInCheck(state with {Board = Board});
+        var stateCopy = this with {Board = BoardCopy};
+        return stateCopy.WhiteIsInCheck();
     }
 
-    private static bool WhiteKingWouldMoveThroughCheckQueenSide(BoardState state)
+    private bool WhiteKingWouldMoveThroughCheckQueenSide()
     {
-        var Board = state.Board;
-        Board[BoardArrayLocation(0,4)] = PIECE.NONE;
-        Board[BoardArrayLocation(0,3)] = PIECE.WHITE_KING;
+        var BoardCopy = this.Board;
+        BoardCopy[BoardArrayLocation(0,4)] = PIECE.NONE;
+        BoardCopy[BoardArrayLocation(0,3)] = PIECE.WHITE_KING;
 
 
-        return WhiteIsInCheck(state with {Board = Board});
+        var stateCopy = this with {Board = BoardCopy};
+        return stateCopy.WhiteIsInCheck();
     }
 
-    private static bool BlackKingWouldMoveThroughCheckKingSide(BoardState state)
+    private bool BlackKingWouldMoveThroughCheckKingSide()
     {
-        var Board = state.Board;
-        Board[BoardArrayLocation(7,4)] = PIECE.NONE;
-        Board[BoardArrayLocation(7,5)] = PIECE.BLACK_KING;
+        var BoardCopy = this.Board;
+        BoardCopy[BoardArrayLocation(7,4)] = PIECE.NONE;
+        BoardCopy[BoardArrayLocation(7,5)] = PIECE.BLACK_KING;
 
-        return BlackIsInCheck(state with {Board = Board});
+        var stateCopy = this with {Board = BoardCopy};
+        return stateCopy.BlackIsInCheck();
     }
 
-    private static bool BlackKingWouldMoveThroughCheckQueenSide(BoardState state)
+    private bool BlackKingWouldMoveThroughCheckQueenSide()
     {
-        var Board = state.Board;
-        Board[BoardArrayLocation(7,4)] = PIECE.NONE;
-        Board[BoardArrayLocation(7,3)] = PIECE.BLACK_KING;
+        var BoardCopy = this.Board;
+        BoardCopy[BoardArrayLocation(7,4)] = PIECE.NONE;
+        BoardCopy[BoardArrayLocation(7,3)] = PIECE.BLACK_KING;
 
-
-        return BlackIsInCheck(state with {Board = Board});
+        var stateCopy = this with {Board = BoardCopy};
+        return stateCopy.BlackIsInCheck();
     }
+
+
 }

@@ -12,7 +12,7 @@ public class ChessHeplerTest_PosibleMoves
     {
         BoardState state = new();
 
-        var moves = ChessHelper.PossibleMoves(state);
+        var moves = state.PossibleMoves();
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -50,7 +50,7 @@ public class ChessHeplerTest_PosibleMoves
         Board[(1*8)+4] = PIECE.NONE;
         BoardState state = new(Board, CurrentTurn: PLAYER.BLACK);
 
-        var moves = ChessHelper.PossibleMoves(state);
+        var moves = state.PossibleMoves();
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,

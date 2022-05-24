@@ -36,7 +36,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Queen
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -105,7 +105,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Queen
 
 
         Location loc = new(4,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -167,7 +167,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Queen
 
 
         Location loc = new(4,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,

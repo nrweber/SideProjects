@@ -35,7 +35,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
         BoardState state = new(){CurrentTurn = PLAYER.BLACK}; // starting board works for this test, just set it to balck's turn
 
         Location loc = new(6,column);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -58,7 +58,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(6,column);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -80,7 +80,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(6,column);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }
@@ -104,7 +104,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -132,7 +132,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }
@@ -155,7 +155,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -182,7 +182,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }
@@ -202,7 +202,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(6,column);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -226,7 +226,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(6,column);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -249,7 +249,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -271,7 +271,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }
@@ -291,7 +291,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(startRow,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -315,7 +315,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(1,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -341,7 +341,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(1,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -367,7 +367,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(1,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -393,7 +393,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
         BoardState state = new(Board, CurrentTurn: PLAYER.BLACK, EnPassanteSquare: new Location(2, attackColumn));
 
         Location loc = new(3,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -415,7 +415,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
         BoardState state = new(Board, CurrentTurn: PLAYER.BLACK, EnPassanteSquare: new Location(2, attackColumn));
 
         Location loc = new(3,startColumn);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -433,7 +433,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_BlackPawn
 
 
         Location loc = new(5,5);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.Empty(moves);
     }

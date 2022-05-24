@@ -35,7 +35,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -73,7 +73,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(3,5);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -111,7 +111,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(7,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -149,7 +149,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(5,0);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -187,7 +187,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,7);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -225,7 +225,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(0,5);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -268,7 +268,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
@@ -306,7 +306,7 @@ public class ChessHeplerTest_PossibleMovesForLocation_Rooks
         BoardState state = new(Board, CurrentTurn: player);
 
         Location loc = new(4,3);
-        var moves = ChessHelper.PossibleMovesForLocation(state, loc);
+        var moves = state.PossibleMovesForLocation(loc);
 
         Assert.NotEmpty(moves);
         Assert.Collection(moves,
