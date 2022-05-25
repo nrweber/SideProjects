@@ -15,7 +15,7 @@ public class BasicTwoPersonChessService
 
     public bool MakeMove(Move m)
     {
-        (var moveHappend, _state) = ChessHelper.MakeMove(_state, m);
+        (var moveHappend, _state) = _state.MakeMove(m);
         DataUpdated();
         return moveHappend;
     }

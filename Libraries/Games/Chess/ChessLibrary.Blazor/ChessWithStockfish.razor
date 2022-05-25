@@ -93,7 +93,7 @@ else
 
         Location newLocation = new Location(r,c);
 
-        (var moveMade, state) = ChessHelper.MakeMove(state, new Move(lastClickedLocation, newLocation));
+        (var moveMade, state) = state.MakeMove(new Move(lastClickedLocation, newLocation));
 
         if(moveMade)
         {
@@ -113,12 +113,11 @@ else
     {
         try
         {
-            var result = await client.GetComputerMoves(ChessHelper.ToFENNotation(state));
-            if(result.Moves.Count != 0)
+            var result = await client.GetComputerMoves(state.ToFENNotation());
+            if(result != null && result.Moves.Count != 0)
             {
                 var move = result.Moves[0].Move;
-                (_, var newState) = ChessHelper.MakeMove(state, move);
-                state = newState;
+                (_, state) = state.MakeMove(move);
             }
         }
         catch
@@ -136,7 +135,7 @@ else
 
     void SetPossibleMoveSquares()
     {
-        var moves = ChessHelper.PossibleMovesForLocation(state, lastClickedLocation);
+        var moves = state.PossibleMovesForLocation(lastClickedLocation);
 
         possibleMoveLocations = new();
         foreach(var m in moves)

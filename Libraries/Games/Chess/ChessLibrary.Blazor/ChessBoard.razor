@@ -109,7 +109,7 @@
         }
         else
         {
-            (bool moved, state) = ChessHelper.MakeMove(state, new Move((Location)lastClickedLocation, newLocation));
+            (bool moved, state) = state.MakeMove(new Move((Location)lastClickedLocation, newLocation));
 
             if(moved)
                 lastClickedLocation = null;
@@ -125,7 +125,7 @@
     {
         // If one of these are null somehow, don't try to make the move
         if(lastClickedLocation != null && promotionEndLocation != null)
-            (_, state) = ChessHelper.MakeMove(state, new Move((Location)lastClickedLocation, (Location)promotionEndLocation, selectedPiece));
+            (_, state) = state.MakeMove(new Move((Location)lastClickedLocation, (Location)promotionEndLocation, selectedPiece));
 
 
         WhitePromotionPicking = false;
@@ -153,7 +153,7 @@
         if(lastClickedLocation == null)
             return;
 
-        var moves = ChessHelper.PossibleMovesForLocation(state, (Location)lastClickedLocation);
+        var moves = state.PossibleMovesForLocation((Location)lastClickedLocation);
 
         foreach(var m in moves)
         {
