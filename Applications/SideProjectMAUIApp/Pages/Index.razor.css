@@ -1,0 +1,12 @@
+#OuterDiv {
+    display: flex;
+    flex-direction: column;
+    height: 100vh
+}
+
+@supports (-webkit-touch-callout: none) {
+    #OuterDiv {
+        height: 94.5vh;
+    }
+}
+

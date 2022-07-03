@@ -1,0 +1,57 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+#OuterBoardDiv {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+
+    background-color: purple;
+}
+
+#BoardTable {
+    width: 100%;
+    padding: 1em;
+    margin: 1em 0;
+}
+
+#BoardTable td
+{
+    border: 1px solid black;
+    width: 12.5%;
+    position: relative;
+}
+
+#BoardTable td:after {
+  content: '';
+  display: block;
+  margin-top: 100%;
+}
+#BoardTable td .cellContent {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.PieceImg
+{
+    width: 100%;
+}
+
+.evenCell
+{
+    background-color: green;
+}
+
+.oddCell
+{
+    background-color: #d1d09b;
+}
+
+
