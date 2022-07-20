@@ -5,6 +5,8 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0;
+    
+    background-color: black;
 }
 
 h1:focus {

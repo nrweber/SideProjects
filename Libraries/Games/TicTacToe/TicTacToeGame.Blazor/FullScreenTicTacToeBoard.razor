@@ -1,24 +1,37 @@
 @using TicTacToeGame
 
-<div id="BoardDiv">
-    <div id="BoardTable">
+<div id="OuterDiv">
+    <div id="BoardDiv">
+        <div id="BoardTable">
 
-    @for(var i = 0; i < game.Board.Length; i++)
-    {
-        var selectionIndex = i;
-        
-        <div class="BoardSquare @(LocCssClass(i))" @onclick="@(() => DoMove(selectionIndex))">
-            <img class="PlayedMove" src="@(LocDisplayValue(i))" />
+        @for(var i = 0; i < game.Board.Length; i++)
+        {
+            var selectionIndex = i;
+            
+            <div class="BoardSquare @(LocCssClass(i))" @onclick="@(() => DoMove(selectionIndex))">
+                <img class="PlayedMove" src="@(LocDisplayValue(i))" />
+            </div>
+
+        }
+
         </div>
 
-    }
-
     </div>
-</div>
-
-<div id="ButtonDiv">
-    <button @onclick="NewGame">New Game</button>
-    <button>Undo</button>
+    <div id="AllButtonDiv">
+        <div class="ButtonDiv">
+            <div id="NewButtonDiv">
+                <button  @onclick="NewGame">New Game</button>
+            </div>
+        </div>
+        <div id="MiddleButtonDiv">
+            &nbsp;
+        </div
+        <div class="ButtonDiv">
+            <div id="UndoButtonDiv">
+               <button>Undo</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 

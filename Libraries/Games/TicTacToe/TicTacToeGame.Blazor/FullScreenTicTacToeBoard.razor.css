@@ -1,3 +1,17 @@
+#OuterDiv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh
+}
+
+/* This height is required for iPhone but it seems to also be that height that is used for Mac as well. Need a different query*/
+@supports (-webkit-touch-callout: none) {
+    #OuterDiv {
+        height: 94.5vh;
+    }
+}
+
 #BoardDiv
 {
     height: 90%;
@@ -32,14 +46,6 @@
     }
 }
 
-#ButtonDiv
-{
-    height: 10%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-}
-
 .BoardSquare {
     background-color: white;
 }
@@ -56,3 +62,31 @@
 {
     background-color: LightSkyblue;
 }
+
+
+#AllButtonDiv {
+    height: 10%;
+    
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.ButtonDiv {
+    position: relative;
+}
+
+#NewButtonDiv {
+    position: absolute;
+    bottom: 30%;
+    left: 10px;
+}
+
+#MiddleButtonDiv {
+}
+
+#UndoButtonDiv {
+    position: absolute;
+    bottom: 30%;
+    right: 10px;
+}
+
