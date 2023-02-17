@@ -6,7 +6,15 @@ namespace TicTacToeGame
 {
     public class TicTacToe
     {
-        private int moveNumber = 0;
+        private Stack<int> _moves = new();
+        private int moveNumber 
+        {
+            get
+            {
+                return _moves.Count;
+            }
+        }
+        
         public int ToMove
         {
             get
@@ -41,6 +49,7 @@ namespace TicTacToeGame
             new int[] {2,4,6},
         };
 
+        
         private int[] _board = new int[9];
         public int[] Board
         {
@@ -59,9 +68,18 @@ namespace TicTacToeGame
             if(Winner == 0 && location >= 0 && location <= 8 && _board[location] == 0)
             {
                 _board[location] = (moveNumber%2)+1;
-                moveNumber += 1;
+                _moves.Push(location);
 
                 CheckWinner();
+            }
+        }
+
+        public void Undo()
+        {
+            if(moveNumber > 0 && _winner == 0)
+            {
+                int lastMove = _moves.Pop();
+                _board[lastMove] = 0;
             }
         }
 

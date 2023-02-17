@@ -215,5 +215,53 @@ namespace TicTacToeGame.Test
 
             Assert.Equal(winningPath, g.WinningPath);
         }
+
+        [Theory]
+        [InlineData(new int[] {5, 1, 4}, 8)]
+        [InlineData(new int[] {1, 3}, 7)]
+        [InlineData(new int[] {8, 4, 5}, 0)]
+        [InlineData(new int[] {3, 8, 1}, 6)]
+        [InlineData(new int[] {8, 1}, 3)]
+        [InlineData(new int[] {1, 8, 4}, 5)]
+        public void UndoMoves(int[] startingMoves, int moveToDoAndUndo)
+        {
+            var g = new TicTacToe();
+            for(int i = 0; i < startingMoves.Length; i++)
+            {
+                g.Place(startingMoves[i]);
+                Assert.Equal(0, g.Winner);
+            }
+
+            var boardBefore = g.Board;
+            g.Place(moveToDoAndUndo);
+            var boardMiddle = g.Board;
+            g.Undo();
+            var boardAfter = g.Board;
+
+            Assert.NotEqual(boardMiddle, boardBefore);
+            Assert.Equal(boardBefore, boardAfter);
+        }
+
+        [Theory]
+        [InlineData(new int[] {0, 8, 1, 7, 2})]
+        public void UndoDoesNothingIfGameIsOver(int[] locations)
+        {
+            var g = new TicTacToe();
+            for(int i = 0; i < locations.Length-1; i++)
+            {
+                g.Place(locations[i]);
+                Assert.Equal(0, g.Winner);
+            }
+            g.Place(locations[locations.Length-1]);
+            Assert.Equal(1, g.Winner);
+
+
+            var boardBefore = g.Board;
+            g.Undo();
+            var boardAfter = g.Board;
+
+            Assert.Equal(boardBefore, boardAfter);
+        }
+
     }
 }

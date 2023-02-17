@@ -16,7 +16,7 @@
 		<ApplicationTitle>NOAAWeatherApp</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.noaaweatherapp</ApplicationId>
+		<ApplicationId>com.nic-weber.noaaweatherapp</ApplicationId>
 		<ApplicationIdGuid>0E207567-9679-4315-B4C0-F5204AF7D485</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -30,6 +30,12 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
+    
+    <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+        <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+        <CodesignKey>Apple Development: Nic Weber (KNNF3BV53L)</CodesignKey>
+        <CodesignProvision>NOAAWeatherApp</CodesignProvision>
+    </PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
@@ -40,13 +46,14 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-
-		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Libraries\Weather\NOAAWeatherLibrary\NOAAWeatherLibrary.csproj" />
 	</ItemGroup>
 
 </Project>

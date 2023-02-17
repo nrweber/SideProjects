@@ -16,7 +16,7 @@ namespace NOAAWeather
 
         public async Task<Forecast?> GetForecastForGridXYAsync(string GridID, string XPoint, string YPoint)
         {
-            string url = $"{BaseURL}/gridpoints/{GridID}/{XPoint},{YPoint}/Forecast";
+            string url = $"{BaseURL}/gridpoints/{GridID}/{XPoint},{YPoint}/forecast";
 
             return await http.GetFromJsonAsync<Forecast?>(url);
         }

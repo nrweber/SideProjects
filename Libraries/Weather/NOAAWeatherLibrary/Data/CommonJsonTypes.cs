@@ -8,7 +8,7 @@ namespace NOAAWeather
     public class Elevation
     {
         [JsonPropertyName("value")]
-        public int? Value { get; set; }
+        public double? Value { get; set; }
 
         [JsonPropertyName("unitCode")]
         public string? UnitCode { get; set; }

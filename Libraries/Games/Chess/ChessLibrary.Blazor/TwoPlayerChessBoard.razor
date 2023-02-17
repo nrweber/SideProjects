@@ -187,7 +187,7 @@ else
     {
         if(_disposed == false)
         {
-            service.DataUpdated += OnDataHasChanged;
+            service.DataUpdated -= OnDataHasChanged;
 
             _disposed = true;
         }

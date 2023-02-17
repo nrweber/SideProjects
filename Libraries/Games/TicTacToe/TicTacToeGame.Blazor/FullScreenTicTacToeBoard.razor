@@ -28,7 +28,7 @@
         </div
         <div class="ButtonDiv">
             <div id="UndoButtonDiv">
-               <button>Undo</button>
+               <button @onclick="UndoMove">Undo</button>
             </div>
         </div>
     </div>
@@ -68,5 +68,10 @@
     {
         game.Place(movLoc);
         InvokeAsync(() => StateHasChanged());
+    }
+
+    void UndoMove()
+    {
+        game.Undo();
     }
 }
